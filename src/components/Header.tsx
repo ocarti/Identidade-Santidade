@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import logoBlack from "@/assets/logo-black.png";
 
 const navItems = [
   { label: "Início", href: "/" },
@@ -15,8 +16,8 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b border-border">
       <div className="container flex items-center justify-between h-16">
-        <Link to="/" className="font-display text-2xl tracking-wider">
-          IDENTIDADE SANTIDADE
+        <Link to="/" className="flex items-center">
+          <img src={logoBlack} alt="Identidade Santidade" className="h-10" />
         </Link>
 
         {/* Desktop nav */}
