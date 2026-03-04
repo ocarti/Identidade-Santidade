@@ -14,16 +14,171 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      expenses: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          data: string
+          descricao: string
+          id: string
+          valor: number
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          data?: string
+          descricao: string
+          id?: string
+          valor: number
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          data?: string
+          descricao?: string
+          id?: string
+          valor?: number
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          arquivo_url: string | null
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          preco: number
+        }
+        Insert: {
+          arquivo_url?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          preco: number
+        }
+        Update: {
+          arquivo_url?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          preco?: number
+        }
+        Relationships: []
+      }
+      registrations: {
+        Row: {
+          cep: string
+          checked_in: boolean
+          cpf: string
+          created_at: string
+          email: string
+          id: string
+          nascimento: string
+          nome: string
+          status_pagamento: Database["public"]["Enums"]["payment_status"]
+          stripe_transaction_id: string | null
+        }
+        Insert: {
+          cep: string
+          checked_in?: boolean
+          cpf: string
+          created_at?: string
+          email: string
+          id?: string
+          nascimento: string
+          nome: string
+          status_pagamento?: Database["public"]["Enums"]["payment_status"]
+          stripe_transaction_id?: string | null
+        }
+        Update: {
+          cep?: string
+          checked_in?: boolean
+          cpf?: string
+          created_at?: string
+          email?: string
+          id?: string
+          nascimento?: string
+          nome?: string
+          status_pagamento?: Database["public"]["Enums"]["payment_status"]
+          stripe_transaction_id?: string | null
+        }
+        Relationships: []
+      }
+      sales: {
+        Row: {
+          created_at: string
+          email_comprador: string
+          id: string
+          nome_comprador: string
+          product_id: string | null
+          stripe_transaction_id: string | null
+          valor: number
+        }
+        Insert: {
+          created_at?: string
+          email_comprador: string
+          id?: string
+          nome_comprador: string
+          product_id?: string | null
+          stripe_transaction_id?: string | null
+          valor: number
+        }
+        Update: {
+          created_at?: string
+          email_comprador?: string
+          id?: string
+          nome_comprador?: string
+          product_id?: string | null
+          stripe_transaction_id?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      payment_status: "pendente" | "pago"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +305,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      payment_status: ["pendente", "pago"],
+    },
   },
 } as const
