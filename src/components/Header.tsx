@@ -6,7 +6,7 @@ import logoBlack from "@/assets/logo-black.png";
 
 const navItems = [
   { label: "Início", href: "/" },
-  { label: "Sobre", href: "/#sobre" },
+  { label: "Sobre", href: "/sobre" },
   { label: "Loja", href: "/loja" },
 ];
 
