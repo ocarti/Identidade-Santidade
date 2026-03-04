@@ -8,7 +8,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <img src={logoWhite} alt="Identidade Santidade" className="h-36" />
-            <p className="font-body text-sm opacity-70 mt-1">Seja santo, porque Eu sou santo.</p>
+            <p className="font-body text-sm opacity-70 mt-1">"Sede santos, porque Eu sou santo." — 1 Pedro 1:16</p>
           </div>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:opacity-60 transition-opacity" aria-label="Instagram">
