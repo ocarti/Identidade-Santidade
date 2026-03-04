@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <img src={logoWhite} alt="Identidade Santidade" className="h-24" />
+            <img src={logoWhite} alt="Identidade Santidade" className="h-28" />
             <p className="font-body text-sm opacity-70 mt-1">Seja santo, porque Eu sou santo.</p>
           </div>
           <div className="flex items-center gap-4">

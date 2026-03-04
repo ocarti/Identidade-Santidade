@@ -17,7 +17,7 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b border-border">
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center">
-          <img src={logoBlack} alt="Identidade Santidade" className="h-20" />
+          <img src={logoBlack} alt="Identidade Santidade" className="h-24" />
         </Link>
 
         {/* Desktop nav */}
