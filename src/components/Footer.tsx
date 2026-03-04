@@ -4,7 +4,7 @@ import logoWhite from "@/assets/logo-white.png";
 export function Footer() {
   return (
     <footer className="border-t border-border bg-primary text-primary-foreground">
-      <div className="container py-12">
+      <div className="px-4 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <img src={logoWhite} alt="Identidade Santidade" className="h-36" />
