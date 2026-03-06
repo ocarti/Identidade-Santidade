@@ -23,7 +23,7 @@ export function HeroSection() {
           transition={{ duration: 0.8 }}
         >
           <p className="font-body text-sm uppercase tracking-[0.3em] mb-4 text-foreground/80">
-            Evento Anual 2026
+            5° Edição - 2026
           </p>
           <h1 className="font-display text-7xl sm:text-8xl md:text-9xl leading-none tracking-tight">
             IDENTIDADE
