@@ -98,8 +98,8 @@ export default function Sobre() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {[
-                { number: "500+", label: "Jovens Impactados" },
-                { number: "12", label: "Edições Realizadas" },
+                { number: "300+", label: "Jovens Impactados" },
+                { number: "4", label: "Edições Realizadas" },
                 { number: "50+", label: "Voluntários" },
                 { number: "1", label: "Propósito: Santidade" },
               ].map((stat, i) => (
