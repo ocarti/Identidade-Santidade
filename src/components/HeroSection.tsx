@@ -66,7 +66,7 @@ export function HeroSection() {
       </div>
 
       {/* Marquee */}
-      <div className="absolute bottom-8 left-0 right-0 bg-primary text-primary-foreground py-3 overflow-hidden">
+      <div className="absolute bottom-16 left-0 right-0 bg-primary text-primary-foreground py-3 overflow-hidden">
         <div className="animate-marquee whitespace-nowrap flex">
           {Array.from({ length: 8 }).map((_, i) => (
             <span key={i} className="font-display text-lg tracking-widest mx-8">
