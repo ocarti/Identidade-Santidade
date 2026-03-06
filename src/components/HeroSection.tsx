@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-image.jpg";
-import logoWhite from "@/assets/logo-white.png";
+
 
 export function HeroSection() {
   return (
@@ -26,11 +26,11 @@ export function HeroSection() {
           <p className="font-body text-sm uppercase tracking-[0.3em] mb-4 text-foreground/80">
             5° Edição - 2026
           </p>
-           <img
-              src={logoWhite}
-              alt="Identidade Santidade"
-              className="max-w-md sm:max-w-lg md:max-w-2xl w-full mx-auto"
-            />
+          <h1 className="font-display text-7xl sm:text-8xl md:text-9xl leading-none">
+            Identidade
+            <br />
+            Santidade
+          </h1>
           <p className="font-body text-lg md:text-xl max-w-xl mx-auto mt-6 text-foreground/70">
             Uma experiência transformadora para aqueles que buscam viver uma fé autêntica e radical.
           </p>
