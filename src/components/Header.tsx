@@ -14,7 +14,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-transparent">
+    <header className="sticky top-0 z-50 bg-background border-b border-border">
       <div className="px-4 flex items-center justify-between h-16">
         <Link to="/" className="flex items-center">
           <img src={logoBlack} alt="Identidade Santidade" className="h-32" />
