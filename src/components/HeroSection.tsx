@@ -31,7 +31,7 @@ export function HeroSection() {
             <span className="text-stroke">SANTIDADE</span>
           </h1>
           <p className="font-body text-lg md:text-xl max-w-xl mx-auto mt-6 text-foreground/70">
-            Uma experiência transformadora para jovens que buscam viver uma fé autêntica e radical.
+            Uma experiência transformadora para aqueles que buscam viver uma fé autêntica e radical.
           </p>
         </motion.div>
 
