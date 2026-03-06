@@ -45,8 +45,8 @@ export function AboutSection() {
             className="space-y-8"
           >
             {[
-              { number: "500+", label: "Jovens Impactados" },
-              { number: "12", label: "Edições Realizadas" },
+              { number: "300+", label: "Jovens Impactados" },
+              { number: "4", label: "Edições Realizadas" },
               { number: "1", label: "Propósito: Santidade" },
             ].map((stat, i) => (
               <motion.div
