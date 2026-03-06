@@ -100,7 +100,7 @@ export default function Sobre() {
               {[
                 { number: "300+", label: "Jovens Impactados" },
                 { number: "4", label: "Edições Realizadas" },
-                { number: "50+", label: "Voluntários" },
+                { number: "30+", label: "Voluntários" },
                 { number: "1", label: "Propósito: Santidade" },
               ].map((stat, i) => (
                 <motion.div
