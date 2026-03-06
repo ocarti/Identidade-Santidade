@@ -152,6 +152,8 @@ export default function Admin() {
                   <TableHead className="font-body text-xs uppercase tracking-widest">Nome</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">CPF</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">E-mail</TableHead>
+                  <TableHead className="font-body text-xs uppercase tracking-widest">Nascimento</TableHead>
+                  <TableHead className="font-body text-xs uppercase tracking-widest">CEP</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Pagamento</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Check-in</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Data</TableHead>
@@ -160,7 +162,7 @@ export default function Admin() {
               <TableBody>
                 {registrations.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground font-body py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground font-body py-8">
                       Nenhum inscrito encontrado.
                     </TableCell>
                   </TableRow>
@@ -170,6 +172,8 @@ export default function Admin() {
                       <TableCell className="font-body">{r.nome}</TableCell>
                       <TableCell className="font-body">{r.cpf}</TableCell>
                       <TableCell className="font-body">{r.email}</TableCell>
+                      <TableCell className="font-body">{new Date(r.nascimento).toLocaleDateString("pt-BR")}</TableCell>
+                      <TableCell className="font-body">{r.cep}</TableCell>
                       <TableCell className="font-body capitalize">{r.status_pagamento}</TableCell>
                       <TableCell className="font-body">{r.checked_in ? "✅" : "—"}</TableCell>
                       <TableCell className="font-body">{new Date(r.created_at).toLocaleDateString("pt-BR")}</TableCell>
