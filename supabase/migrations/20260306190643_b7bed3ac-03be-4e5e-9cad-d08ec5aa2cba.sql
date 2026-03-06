@@ -1,0 +1,1 @@
+ALTER TABLE public.sales ADD COLUMN cpf_comprador text;

@@ -109,6 +109,7 @@ export type Database = {
       }
       sales: {
         Row: {
+          cpf_comprador: string | null
           created_at: string
           email_comprador: string
           id: string
@@ -118,6 +119,7 @@ export type Database = {
           valor: number
         }
         Insert: {
+          cpf_comprador?: string | null
           created_at?: string
           email_comprador: string
           id?: string
@@ -127,6 +129,7 @@ export type Database = {
           valor: number
         }
         Update: {
+          cpf_comprador?: string | null
           created_at?: string
           email_comprador?: string
           id?: string
