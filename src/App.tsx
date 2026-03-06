@@ -10,6 +10,7 @@ import Sobre from "./pages/Sobre";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
+import { AdminRouteGuard } from "./components/AdminRouteGuard";
 
 const queryClient = new QueryClient();
 
@@ -24,7 +25,7 @@ const App = () => (
           <Route path="/sobre" element={<Sobre />} />
           <Route path="/inscricao" element={<Inscricao />} />
           <Route path="/loja" element={<Loja />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin" element={<AdminRouteGuard><Admin /></AdminRouteGuard>} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
