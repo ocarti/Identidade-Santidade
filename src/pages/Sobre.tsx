@@ -101,7 +101,7 @@ export default function Sobre() {
                 { number: "300+", label: "Jovens Impactados" },
                 { number: "4", label: "Edições Realizadas" },
                 { number: "30+", label: "Voluntários" },
-                { number: "1", label: "Propósito: Santidade" },
+                { number: "1", label: "Propósito: Viver a Santidade Através da Identidade" },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
