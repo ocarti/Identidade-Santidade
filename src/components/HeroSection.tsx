@@ -17,7 +17,7 @@ export function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container text-center py-32">
+      <div className="relative z-10 container text-center py-32 mt-16">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -26,7 +26,7 @@ export function HeroSection() {
           <h1 className="font-display text-7xl sm:text-8xl md:text-9xl leading-none">
             Identidade
             <br />
-            Santidade
+            <span className="text-transparent" style={{ WebkitTextStroke: "2px currentcolor" }}>Santidade</span>
           </h1>
           <p className="font-body text-lg md:text-xl max-w-xl mx-auto mt-6 text-foreground/70">
             Uma experiência transformadora para aqueles que buscam viver uma fé autêntica e radical.
