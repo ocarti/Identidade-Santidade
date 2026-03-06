@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { registrationSchema } from "@/lib/validations";
 
 export default function Inscricao() {
   const [form, setForm] = useState({
@@ -14,15 +16,41 @@ export default function Inscricao() {
     cep: "",
     email: "",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Will integrate with Stripe + Cloud later
-    toast.success("Inscrição enviada! Em breve você será redirecionado para o pagamento.");
+    const result = registrationSchema.safeParse(form);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setSubmitting(true);
+    const { data, error } = await supabase.functions.invoke("create-registration", {
+      body: result.data,
+    });
+
+    if (error || (data && data.error)) {
+      toast.error(data?.error || "Erro ao enviar inscrição. Tente novamente.");
+      setSubmitting(false);
+      return;
+    }
+
+    toast.success("Inscrição enviada com sucesso!");
+    setForm({ nome: "", cpf: "", nascimento: "", cep: "", email: "" });
+    setErrors({});
+    setSubmitting(false);
   };
 
   return (
@@ -53,10 +81,10 @@ export default function Inscricao() {
                   name="nome"
                   value={form.nome}
                   onChange={handleChange}
-                  required
                   className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                   placeholder="Seu nome completo"
                 />
+                {errors.nome && <p className="text-destructive text-xs mt-1 font-body">{errors.nome}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -69,10 +97,10 @@ export default function Inscricao() {
                     name="cpf"
                     value={form.cpf}
                     onChange={handleChange}
-                    required
                     className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                     placeholder="000.000.000-00"
                   />
+                  {errors.cpf && <p className="text-destructive text-xs mt-1 font-body">{errors.cpf}</p>}
                 </div>
                 <div>
                   <Label htmlFor="nascimento" className="font-body text-xs uppercase tracking-widest mb-2 block">
@@ -84,9 +112,9 @@ export default function Inscricao() {
                     type="date"
                     value={form.nascimento}
                     onChange={handleChange}
-                    required
                     className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                   />
+                  {errors.nascimento && <p className="text-destructive text-xs mt-1 font-body">{errors.nascimento}</p>}
                 </div>
               </div>
 
@@ -100,10 +128,10 @@ export default function Inscricao() {
                     name="cep"
                     value={form.cep}
                     onChange={handleChange}
-                    required
                     className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                     placeholder="00000-000"
                   />
+                  {errors.cep && <p className="text-destructive text-xs mt-1 font-body">{errors.cep}</p>}
                 </div>
                 <div>
                   <Label htmlFor="email" className="font-body text-xs uppercase tracking-widest mb-2 block">
@@ -115,18 +143,19 @@ export default function Inscricao() {
                     type="email"
                     value={form.email}
                     onChange={handleChange}
-                    required
                     className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                     placeholder="seu@email.com"
                   />
+                  {errors.email && <p className="text-destructive text-xs mt-1 font-body">{errors.email}</p>}
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity"
+                disabled={submitting}
+                className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity disabled:opacity-50"
               >
-                Prosseguir para pagamento
+                {submitting ? "Enviando..." : "Prosseguir para pagamento"}
               </button>
 
               <p className="font-body text-xs text-center text-muted-foreground">

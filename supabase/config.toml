@@ -1,1 +1,7 @@
 project_id = "xyfijjwjalqwessnrxgw"
+
+[functions.create-registration]
+verify_jwt = false
+
+[functions.create-sale]
+verify_jwt = false

@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { saleCheckoutSchema } from "@/lib/validations";
 
 type Product = {
   id: string;
@@ -26,6 +27,7 @@ export default function Loja() {
   const [form, setForm] = useState({ nome: "", email: "", cpf: "" });
   const [accepted, setAccepted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     supabase.from("products").select("id, nome, preco, descricao").then(({ data }) => {
@@ -60,21 +62,30 @@ export default function Loja() {
     }
     if (cart.length === 0) return;
 
+    const result = saleCheckoutSchema.safeParse(form);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+      });
+      setFormErrors(fieldErrors);
+      return;
+    }
+    setFormErrors({});
+
     setSubmitting(true);
 
-    // Insert one sale per cart item
-    const salesData = cart.map((item) => ({
-      nome_comprador: form.nome,
-      email_comprador: form.email,
-      cpf_comprador: form.cpf,
-      product_id: item.id,
-      valor: item.preco * item.qty,
-    }));
+    const { data, error } = await supabase.functions.invoke("create-sale", {
+      body: {
+        nome: result.data.nome,
+        email: result.data.email,
+        cpf: result.data.cpf,
+        items: cart.map((item) => ({ product_id: item.id, qty: item.qty })),
+      },
+    });
 
-    const { error } = await supabase.from("sales").insert(salesData);
-
-    if (error) {
-      toast.error("Erro ao processar compra. Tente novamente.");
+    if (error || (data && data.error)) {
+      toast.error(data?.error || "Erro ao processar compra. Tente novamente.");
       setSubmitting(false);
       return;
     }
@@ -223,11 +234,11 @@ export default function Loja() {
                       <Label className="font-body text-xs uppercase tracking-widest mb-2 block">Nome Completo</Label>
                       <Input
                         value={form.nome}
-                        onChange={(e) => setForm({ ...form, nome: e.target.value })}
-                        required
+                        onChange={(e) => { setForm({ ...form, nome: e.target.value }); setFormErrors({ ...formErrors, nome: "" }); }}
                         className="border-foreground/20 bg-transparent font-body"
                         placeholder="Seu nome completo"
                       />
+                      {formErrors.nome && <p className="text-destructive text-xs mt-1 font-body">{formErrors.nome}</p>}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -235,21 +246,21 @@ export default function Loja() {
                         <Input
                           type="email"
                           value={form.email}
-                          onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          required
+                          onChange={(e) => { setForm({ ...form, email: e.target.value }); setFormErrors({ ...formErrors, email: "" }); }}
                           className="border-foreground/20 bg-transparent font-body"
                           placeholder="seu@email.com"
                         />
+                        {formErrors.email && <p className="text-destructive text-xs mt-1 font-body">{formErrors.email}</p>}
                       </div>
                       <div>
                         <Label className="font-body text-xs uppercase tracking-widest mb-2 block">CPF</Label>
                         <Input
                           value={form.cpf}
-                          onChange={(e) => setForm({ ...form, cpf: e.target.value })}
-                          required
+                          onChange={(e) => { setForm({ ...form, cpf: e.target.value }); setFormErrors({ ...formErrors, cpf: "" }); }}
                           className="border-foreground/20 bg-transparent font-body"
                           placeholder="000.000.000-00"
                         />
+                        {formErrors.cpf && <p className="text-destructive text-xs mt-1 font-body">{formErrors.cpf}</p>}
                       </div>
                     </div>
 
