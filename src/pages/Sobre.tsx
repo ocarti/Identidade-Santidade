@@ -23,9 +23,6 @@ export default function Sobre() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <p className="font-body text-sm uppercase tracking-[0.3em] text-primary-foreground/60 mb-2">
-                Quem Somos
-              </p>
               <h1 className="font-display text-6xl md:text-8xl">Sobre</h1>
             </motion.div>
           </div>
