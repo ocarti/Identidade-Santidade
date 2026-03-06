@@ -26,7 +26,7 @@ export function HeroSection() {
           <h1 className="font-display text-7xl sm:text-8xl md:text-9xl leading-none">
             Identidade
             <br />
-            <span className="text-transparent" style={{ WebkitTextStroke: "2px currentcolor" }}>Santidade</span>
+            <span className="text-transparent" style={{ WebkitTextStroke: "2px black" }}>Santidade</span>
           </h1>
           <p className="font-body text-lg md:text-xl max-w-xl mx-auto mt-6 text-foreground/70">
             Uma experiência transformadora para aqueles que buscam viver uma fé autêntica e radical.
