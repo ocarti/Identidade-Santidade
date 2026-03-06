@@ -8,6 +8,18 @@ import {
 import { toast } from "sonner";
 import { LogOut, Download } from "lucide-react";
 import { motion } from "framer-motion";
+import { RegistrationsTable } from "@/components/admin/RegistrationsTable";
+
+type Sale = {
+  id: string;
+  nome_comprador: string;
+  email_comprador: string;
+  cpf_comprador: string | null;
+  valor: number;
+  product_id: string | null;
+  created_at: string;
+  product_name?: string;
+};
 
 type Registration = {
   id: string;
@@ -19,17 +31,6 @@ type Registration = {
   status_pagamento: string;
   checked_in: boolean;
   created_at: string;
-};
-
-type Sale = {
-  id: string;
-  nome_comprador: string;
-  email_comprador: string;
-  cpf_comprador: string | null;
-  valor: number;
-  product_id: string | null;
-  created_at: string;
-  product_name?: string;
 };
 
 function exportCSV(filename: string, headers: string[], rows: string[][]) {
@@ -55,19 +56,9 @@ export default function Admin() {
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      navigate("/admin/login");
-      return;
-    }
-    const { data: isAdmin } = await supabase.rpc("has_role", {
-      _user_id: user.id,
-      _role: "admin",
-    });
-    if (!isAdmin) {
-      await supabase.auth.signOut();
-      navigate("/admin/login");
-      return;
-    }
+    if (!user) { navigate("/admin/login"); return; }
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
+    if (!isAdmin) { await supabase.auth.signOut(); navigate("/admin/login"); return; }
     fetchData();
   };
 
@@ -78,16 +69,10 @@ export default function Admin() {
       supabase.from("sales").select("*").order("created_at", { ascending: false }),
       supabase.from("products").select("id, nome"),
     ]);
-
     if (regRes.data) setRegistrations(regRes.data);
     if (salesRes.data && productsRes.data) {
       const productMap = new Map(productsRes.data.map((p) => [p.id, p.nome]));
-      setSales(
-        salesRes.data.map((s) => ({
-          ...s,
-          product_name: s.product_id ? productMap.get(s.product_id) ?? "—" : "—",
-        }))
-      );
+      setSales(salesRes.data.map((s) => ({ ...s, product_name: s.product_id ? productMap.get(s.product_id) ?? "—" : "—" })));
     }
     setLoading(false);
   };
@@ -95,17 +80,6 @@ export default function Admin() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/admin/login");
-  };
-
-  const exportRegistrations = () => {
-    const headers = ["Nome", "CPF", "E-mail", "Nascimento", "CEP", "Pagamento", "Check-in", "Data"];
-    const rows = registrations.map((r) => [
-      r.nome, r.cpf, r.email, r.nascimento, r.cep,
-      r.status_pagamento, r.checked_in ? "Sim" : "Não",
-      new Date(r.created_at).toLocaleDateString("pt-BR"),
-    ]);
-    exportCSV("inscritos.csv", headers, rows);
-    toast.success("CSV de inscritos exportado!");
   };
 
   const exportSales = () => {
@@ -137,53 +111,7 @@ export default function Admin() {
       </header>
 
       <main className="container py-8 space-y-12">
-        {/* Registrations */}
-        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-3xl">Inscritos no Evento</h2>
-            <Button variant="outline" onClick={exportRegistrations} className="font-body text-xs uppercase tracking-widest">
-              <Download size={14} className="mr-2" /> Exportar CSV
-            </Button>
-          </div>
-          <div className="border border-border overflow-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="font-body text-xs uppercase tracking-widest">Nome</TableHead>
-                  <TableHead className="font-body text-xs uppercase tracking-widest">CPF</TableHead>
-                  <TableHead className="font-body text-xs uppercase tracking-widest">E-mail</TableHead>
-                  <TableHead className="font-body text-xs uppercase tracking-widest">Nascimento</TableHead>
-                  <TableHead className="font-body text-xs uppercase tracking-widest">CEP</TableHead>
-                  <TableHead className="font-body text-xs uppercase tracking-widest">Pagamento</TableHead>
-                  <TableHead className="font-body text-xs uppercase tracking-widest">Check-in</TableHead>
-                  <TableHead className="font-body text-xs uppercase tracking-widest">Data</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {registrations.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground font-body py-8">
-                      Nenhum inscrito encontrado.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  registrations.map((r) => (
-                    <TableRow key={r.id}>
-                      <TableCell className="font-body">{r.nome}</TableCell>
-                      <TableCell className="font-body">{r.cpf}</TableCell>
-                      <TableCell className="font-body">{r.email}</TableCell>
-                      <TableCell className="font-body">{new Date(r.nascimento).toLocaleDateString("pt-BR")}</TableCell>
-                      <TableCell className="font-body">{r.cep}</TableCell>
-                      <TableCell className="font-body capitalize">{r.status_pagamento}</TableCell>
-                      <TableCell className="font-body">{r.checked_in ? "✅" : "—"}</TableCell>
-                      <TableCell className="font-body">{new Date(r.created_at).toLocaleDateString("pt-BR")}</TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </motion.section>
+        <RegistrationsTable registrations={registrations} onRefresh={fetchData} />
 
         {/* Sales */}
         <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
