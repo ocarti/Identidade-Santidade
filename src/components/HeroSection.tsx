@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-image.jpg";
+import logoWhite from "@/assets/logo-white.png";
 
 export function HeroSection() {
   return (
