@@ -152,6 +152,8 @@ export default function Admin() {
                   <TableHead className="font-body text-xs uppercase tracking-widest">Nome</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">CPF</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">E-mail</TableHead>
+                  <TableHead className="font-body text-xs uppercase tracking-widest">Nascimento</TableHead>
+                  <TableHead className="font-body text-xs uppercase tracking-widest">CEP</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Pagamento</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Check-in</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Data</TableHead>
