@@ -45,6 +45,21 @@ export function GallerySection() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-2 aspect-video overflow-hidden group"
+        >
+          <video
+            src="/videos/2025IEDS.mp4"
+            controls
+            preload="metadata"
+            className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+          />
+        </motion.div>
       </div>
     </section>
   );
