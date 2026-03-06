@@ -48,7 +48,7 @@ export function HeroSection() {
             Garanta sua vaga
           </Link>
           <a
-            href="#depoimentos"
+            href="#sobre"
             className="border-2 border-foreground text-foreground px-10 py-4 font-body text-sm font-semibold uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
           >
             Saiba mais
