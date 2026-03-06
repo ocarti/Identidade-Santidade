@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 export function AboutSection() {
   return (
-    <section id="sobre" className="-mt-24 relative z-10 py-24 bg-primary text-primary-foreground">
+    <section id="sobre" className="-mt-20 relative z-10 py-24 bg-primary text-primary-foreground">
       <div className="container">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <motion.div
