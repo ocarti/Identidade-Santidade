@@ -23,9 +23,6 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <p className="font-body text-sm uppercase tracking-[0.3em] mb-4 text-foreground/80">
-            5° Edição - 2026
-          </p>
           <h1 className="font-display text-7xl sm:text-8xl md:text-9xl leading-none">
             Identidade
             <br />
