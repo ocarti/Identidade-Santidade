@@ -57,7 +57,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-6"
+          className="mt-16"
         >
           <p className="font-body text-sm uppercase tracking-[0.3em] text-foreground/80">
             5° Edição - 2026
