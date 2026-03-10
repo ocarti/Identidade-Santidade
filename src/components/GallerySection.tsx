@@ -66,6 +66,13 @@ export function GallerySection() {
           />
         </motion.div>
       </div>
+
+      <ImageLightbox
+        src={lightboxSrc}
+        alt="Momento do evento"
+        open={!!lightboxSrc}
+        onOpenChange={(open) => !open && setLightboxSrc(null)}
+      />
     </section>
   );
 }
