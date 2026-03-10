@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
+import { ImageLightbox } from "@/components/ImageLightbox";
 import gallery1 from "@/assets/gallery-1.jpg";
 import gallery3 from "@/assets/gallery-3.jpg";
 
 export default function Sobre() {
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -70,7 +74,8 @@ export default function Sobre() {
                 <img
                   src={gallery3}
                   alt="Momento de adoração"
-                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
+                  onClick={() => setLightboxSrc(gallery3)}
                 />
               </motion.div>
             </div>
@@ -174,6 +179,13 @@ export default function Sobre() {
         </section>
       </main>
       <Footer />
+
+      <ImageLightbox
+        src={lightboxSrc}
+        alt="Identidade Santidade"
+        open={!!lightboxSrc}
+        onOpenChange={(open) => !open && setLightboxSrc(null)}
+      />
     </div>
   );
 }
