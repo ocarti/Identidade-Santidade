@@ -7,6 +7,8 @@ import gallery1 from "@/assets/gallery-1.jpg";
 import gallery3 from "@/assets/gallery-3.jpg";
 
 export default function Sobre() {
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
