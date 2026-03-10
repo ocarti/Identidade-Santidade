@@ -24,7 +24,7 @@ export function HeroSection() {
           transition={{ duration: 0.8 }}
         >
           <h1 className="sr-only">Identidade Santidade</h1>
-          <p className="font-body text-lg md:text-xl max-w-xl mx-auto mt-6 text-foreground font-medium">
+          <p className="font-body text-xl md:text-2xl max-w-xl mx-auto mt-6 text-foreground font-medium">
             Uma experiência transformadora para aqueles que buscam viver uma fé autêntica e radical.
           </p>
         </motion.div>
@@ -53,9 +53,9 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-10"
+          className="mt-16"
         >
-          <p className="font-body text-sm uppercase tracking-[0.3em] text-foreground font-medium">
+          <p className="font-body text-base uppercase tracking-[0.3em] text-foreground font-medium">
             5° Edição - 2026
           </p>
         </motion.div>
