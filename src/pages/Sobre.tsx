@@ -74,7 +74,8 @@ export default function Sobre() {
                 <img
                   src={gallery3}
                   alt="Momento de adoração"
-                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
+                  onClick={() => setLightboxSrc(gallery3)}
                 />
               </motion.div>
             </div>
