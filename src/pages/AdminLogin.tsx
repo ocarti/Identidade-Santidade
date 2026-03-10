@@ -58,7 +58,7 @@ export default function AdminLogin() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-sm"
       >
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-2">
           <img src={logoBlack} alt="Identidade Santidade" className="h-[19.6rem]" />
         </div>
         <h1 className="font-display text-3xl text-center mb-4">Painel Admin</h1>
