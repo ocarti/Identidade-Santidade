@@ -12,11 +12,11 @@ export function ImageLightbox({ src, alt, open, onOpenChange }: ImageLightboxPro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 border-none bg-transparent shadow-none [&>button]:text-white [&>button]:bg-black/50 [&>button]:rounded-full [&>button]:p-1">
+      <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 border-none bg-transparent shadow-none [&>button]:text-white [&>button]:bg-black/60 [&>button]:rounded-full [&>button]:p-2 [&>button]:h-8 [&>button]:w-8">
         <img
           src={src}
           alt={alt || ""}
-          className="w-full h-full max-h-[85vh] object-contain rounded-lg"
+          className="max-w-[95vw] max-h-[90vh] object-contain rounded-lg select-none"
         />
       </DialogContent>
     </Dialog>
