@@ -59,7 +59,7 @@ export default function AdminLogin() {
         className="w-full max-w-sm"
       >
         <div className="flex justify-center mb-2">
-          <img src={logoBlack} alt="Identidade Santidade" className="h-[19.6rem] scale-y-105 scale-x-110" />
+          <img src={logoBlack} alt="Identidade Santidade" className="h-[19.6rem] scale-y-100 scale-x-110" />
         </div>
         <h1 className="font-display text-3xl text-center mb-4">Painel Admin</h1>
 
