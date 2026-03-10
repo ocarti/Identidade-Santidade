@@ -179,6 +179,13 @@ export default function Sobre() {
         </section>
       </main>
       <Footer />
+
+      <ImageLightbox
+        src={lightboxSrc}
+        alt="Identidade Santidade"
+        open={!!lightboxSrc}
+        onOpenChange={(open) => !open && setLightboxSrc(null)}
+      />
     </div>
   );
 }
