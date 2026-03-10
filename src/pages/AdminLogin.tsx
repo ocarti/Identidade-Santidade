@@ -61,7 +61,7 @@ export default function AdminLogin() {
         <div className="flex justify-center mb-4">
           <img src={logoBlack} alt="Identidade Santidade" className="h-[20rem]" />
         </div>
-        <h1 className="font-display text-3xl text-center mb-8">Painel Admin</h1>
+        <h1 className="font-display text-3xl text-center mb-4">Painel Admin</h1>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
