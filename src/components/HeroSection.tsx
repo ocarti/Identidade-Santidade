@@ -35,7 +35,7 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-10"
         >
-          <p className="font-body text-base uppercase tracking-[0.3em] text-foreground font-medium">
+          <p className="font-body text-base uppercase tracking-[0.3em] text-foreground font-semibold">
             5° Edição - 2026
           </p>
         </motion.div>
