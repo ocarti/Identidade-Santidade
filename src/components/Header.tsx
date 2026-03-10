@@ -14,10 +14,10 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-background border-b border-border overflow-hidden">
+    <header className="sticky top-0 z-50 bg-background border-b border-border">
       <div className="px-4 flex items-center justify-between h-16">
         <Link to="/" className="flex items-center">
-          <img src={logoBlack} alt="Identidade Santidade" className="h-32" />
+          <img src={logoBlack} alt="Identidade Santidade" className="h-14" />
         </Link>
 
         {/* Desktop nav */}
