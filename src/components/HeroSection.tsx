@@ -24,7 +24,7 @@ export function HeroSection() {
           transition={{ duration: 0.8 }}
         >
           <h1 className="sr-only">Identidade Santidade</h1>
-          <p className="font-body text-lg md:text-xl max-w-xl mx-auto mt-6 text-foreground font-medium">
+          <p className="font-body text-xl md:text-2xl max-w-xl mx-auto mt-6 text-foreground font-medium">
             Uma experiência transformadora para aqueles que buscam viver uma fé autêntica e radical.
           </p>
         </motion.div>
