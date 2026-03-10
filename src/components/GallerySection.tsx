@@ -43,8 +43,9 @@ export function GallerySection() {
               <img
                 src={src}
                 alt={`Momento do evento ${i + 1}`}
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105 cursor-pointer"
                 loading="lazy"
+                onClick={() => setLightboxSrc(src)}
               />
             </motion.div>
           ))}
