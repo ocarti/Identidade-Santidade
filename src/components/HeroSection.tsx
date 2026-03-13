@@ -4,7 +4,7 @@ import heroImage from "@/assets/hero-image-new.jpg";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-start justify-center overflow-hidden">
       {/* Background image */}
       <div className="absolute inset-0">
         <img
@@ -16,7 +16,7 @@ export function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container py-32 mt-16">
+      <div className="relative z-10 container pt-28 mt-16">
         <div className="flex flex-col items-center">
           {/* Large typographic title */}
           <motion.div
