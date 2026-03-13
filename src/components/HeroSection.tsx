@@ -40,7 +40,7 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="mt-8"
           >
-            <span className="font-body text-xs uppercase tracking-[0.5em] text-foreground border border-foreground px-6 py-2 inline-block">
+            <span className="font-body text-xs uppercase tracking-[0.5em] text-foreground border-2 border-foreground px-6 py-2 inline-block font-bold">
               5° Edição — 2026
             </span>
           </motion.div>
