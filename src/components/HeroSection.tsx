@@ -25,10 +25,10 @@ export function HeroSection() {
             transition={{ duration: 1, ease: "easeOut" }}
             className="text-center"
           >
-            <h1 className="font-display text-[clamp(4rem,15vw,12rem)] leading-[0.85] tracking-tight text-foreground">
+            <h1 className="font-display text-[clamp(3.5rem,12vw,9rem)] leading-[0.85] tracking-tight text-foreground">
               IDENTIDADE
             </h1>
-            <h1 className="font-display text-[clamp(4rem,15vw,12rem)] leading-[0.85] tracking-tight text-stroke">
+            <h1 className="font-display text-[clamp(3.5rem,12vw,9rem)] leading-[0.85] tracking-tight text-stroke">
               SANTIDADE
             </h1>
           </motion.div>
