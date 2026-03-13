@@ -16,7 +16,7 @@ export function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container pt-28 mt-16">
+      <div className="relative z-10 container pt-20 mt-8">
         <div className="flex flex-col items-center">
           {/* Large typographic title */}
           <motion.div
