@@ -54,10 +54,16 @@ export function HeroSection() {
           >
             <Link
               to="/inscricao"
-              className="bg-primary text-primary-foreground px-12 py-4 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity"
+              className="bg-primary text-primary-foreground px-10 py-4 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity"
             >
               Garanta sua vaga
             </Link>
+            <a
+              href="#sobre"
+              className="border-2 border-foreground text-foreground px-10 py-4 font-body text-sm font-semibold uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
+            >
+              Saiba mais
+            </a>
           </motion.div>
         </div>
       </div>
