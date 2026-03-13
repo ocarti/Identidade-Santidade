@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-image.jpg";
 
-
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -13,52 +12,54 @@ export function HeroSection() {
           alt="Jovens em adoração no evento Identidade Santidade"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-background/40" />
+        <div className="absolute inset-0 bg-background/30" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container text-center py-32 mt-24">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h1 className="sr-only">Identidade Santidade</h1>
-          <p className="font-body text-xl md:text-2xl max-w-xl mx-auto mt-6 text-foreground font-medium">
-            Uma experiência transformadora para aqueles que buscam viver uma fé autêntica e radical.
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-24 flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <Link
-            to="/inscricao"
-            className="bg-primary text-primary-foreground px-10 py-4 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity"
+      <div className="relative z-10 container py-32 mt-16">
+        <div className="flex flex-col items-center">
+          {/* Large typographic title */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="text-center"
           >
-            Garanta sua vaga
-          </Link>
-          <a
-            href="#sobre"
-            className="border-2 border-foreground text-foreground px-10 py-4 font-body text-sm font-semibold uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
-          >
-            Saiba mais
-          </a>
-        </motion.div>
+            <h1 className="font-display text-[clamp(4rem,15vw,12rem)] leading-[0.85] tracking-tight text-foreground">
+              IDENTIDADE
+            </h1>
+            <h1 className="font-display text-[clamp(4rem,15vw,12rem)] leading-[0.85] tracking-tight text-stroke">
+              SANTIDADE
+            </h1>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-16"
-        >
-          <p className="font-body text-base uppercase tracking-[0.3em] text-foreground font-semibold">
-            5° Edição - 2026
-          </p>
-        </motion.div>
+          {/* Edition badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-8"
+          >
+            <span className="font-body text-xs uppercase tracking-[0.5em] text-foreground border border-foreground px-6 py-2 inline-block">
+              5° Edição — 2026
+            </span>
+          </motion.div>
+
+          {/* Single CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="mt-12"
+          >
+            <Link
+              to="/inscricao"
+              className="bg-primary text-primary-foreground px-12 py-4 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity"
+            >
+              Garanta sua vaga
+            </Link>
+          </motion.div>
+        </div>
       </div>
 
       {/* Marquee */}
