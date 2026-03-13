@@ -33,17 +33,6 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-10"
-        >
-          <p className="font-body text-base uppercase tracking-[0.3em] text-foreground font-semibold">
-            5° Edição - 2026
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
           className="mt-24 flex flex-col sm:flex-row gap-4 justify-center"
         >
           <Link
@@ -58,6 +47,17 @@ export function HeroSection() {
           >
             Saiba mais
           </a>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-10"
+        >
+          <p className="font-body text-base uppercase tracking-[0.3em] text-foreground font-semibold">
+            5° Edição - 2026
+          </p>
         </motion.div>
       </div>
 
