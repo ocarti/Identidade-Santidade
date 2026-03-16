@@ -104,7 +104,7 @@ export default function Evento() {
         {/* Hero banner */}
         <section className="relative h-[60vh] flex items-end overflow-hidden">
           <img
-            src={gallery1}
+            src={eventoHero}
             alt="Congresso Identidade Santidade"
             className="absolute inset-0 w-full h-full object-cover grayscale"
           />
