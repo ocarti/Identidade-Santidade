@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
@@ -8,57 +9,118 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { registrationSchema } from "@/lib/validations";
+import { Plus, Trash2, Users } from "lucide-react";
+
+interface Participant {
+  nome: string;
+  cpf: string;
+  nascimento: string;
+  cep: string;
+  email: string;
+}
+
+const emptyParticipant = (): Participant => ({
+  nome: "",
+  cpf: "",
+  nascimento: "",
+  cep: "",
+  email: "",
+});
 
 export default function Inscricao() {
-  const [form, setForm] = useState({
-    nome: "",
-    cpf: "",
-    nascimento: "",
-    cep: "",
-    email: "",
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const navigate = useNavigate();
+  const [buyerEmail, setBuyerEmail] = useState("");
+  const [participants, setParticipants] = useState<Participant[]>([emptyParticipant()]);
+  const [errors, setErrors] = useState<Record<string, string>[]>([{}]);
+  const [buyerEmailError, setBuyerEmailError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+  const addParticipant = () => {
+    if (participants.length >= 10) {
+      toast.error("Máximo de 10 inscrições por vez.");
+      return;
+    }
+    setParticipants([...participants, emptyParticipant()]);
+    setErrors([...errors, {}]);
+  };
+
+  const removeParticipant = (index: number) => {
+    if (participants.length <= 1) return;
+    setParticipants(participants.filter((_, i) => i !== index));
+    setErrors(errors.filter((_, i) => i !== index));
+  };
+
+  const handleChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const updated = [...participants];
+    updated[index] = { ...updated[index], [e.target.name]: e.target.value };
+    setParticipants(updated);
+    const updatedErrors = [...errors];
+    updatedErrors[index] = { ...updatedErrors[index], [e.target.name]: "" };
+    setErrors(updatedErrors);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = registrationSchema.safeParse(form);
-    if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
-      result.error.errors.forEach((err) => {
-        if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
-      });
-      setErrors(fieldErrors);
+
+    // Validate buyer email
+    const emailCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!buyerEmail || !emailCheck.test(buyerEmail)) {
+      setBuyerEmailError("E-mail do comprador inválido");
       return;
     }
+    setBuyerEmailError("");
+
+    // Validate each participant
+    let hasErrors = false;
+    const newErrors: Record<string, string>[] = [];
+
+    for (const p of participants) {
+      const result = registrationSchema.safeParse(p);
+      if (!result.success) {
+        hasErrors = true;
+        const fieldErrors: Record<string, string> = {};
+        result.error.errors.forEach((err) => {
+          if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+        });
+        newErrors.push(fieldErrors);
+      } else {
+        newErrors.push({});
+      }
+    }
+
+    setErrors(newErrors);
+    if (hasErrors) return;
 
     setSubmitting(true);
     const { data, error } = await supabase.functions.invoke("create-registration", {
-      body: result.data,
+      body: {
+        buyer_email: buyerEmail.trim(),
+        participants,
+      },
     });
 
     if (error || (data && data.error)) {
-      toast.error(data?.error || "Erro ao enviar inscrição. Tente novamente.");
+      toast.error(data?.error || "Erro ao enviar inscrições. Tente novamente.");
       setSubmitting(false);
       return;
     }
 
-    toast.success("Inscrição enviada com sucesso!");
-    setForm({ nome: "", cpf: "", nascimento: "", cep: "", email: "" });
-    setErrors({});
-    setSubmitting(false);
+    toast.success("Inscrições realizadas com sucesso!");
+    // Navigate to success page with order data
+    navigate("/inscricao/sucesso", {
+      state: {
+        order_id: data.order_id,
+        registrations: data.registrations,
+        buyer_email: buyerEmail.trim(),
+      },
+    });
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="pt-24 pb-16">
-        <div className="container max-w-lg">
+        <div className="container max-w-2xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -69,99 +131,182 @@ export default function Inscricao() {
             </p>
             <h1 className="font-display text-5xl md:text-6xl mb-2">Inscrição</h1>
             <p className="font-body text-muted-foreground mb-10">
-              Preencha seus dados para garantir sua vaga no Identidade Santidade 2026.
+              Preencha os dados de cada participante. Você pode inscrever várias pessoas de uma vez.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <Label htmlFor="nome" className="font-body text-xs uppercase tracking-widest mb-2 block">
-                  Nome Completo
-                </Label>
-                <Input
-                  id="nome"
-                  name="nome"
-                  value={form.nome}
-                  onChange={handleChange}
-                  className="border-foreground/20 bg-transparent font-body focus:border-foreground"
-                  placeholder="Seu nome completo"
-                />
-                {errors.nome && <p className="text-destructive text-xs mt-1 font-body">{errors.nome}</p>}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Buyer email */}
+              <div className="p-6 border border-foreground/10 space-y-4">
+                <h2 className="font-display text-2xl flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Dados do Comprador
+                </h2>
                 <div>
-                  <Label htmlFor="cpf" className="font-body text-xs uppercase tracking-widest mb-2 block">
-                    CPF
+                  <Label className="font-body text-xs uppercase tracking-widest mb-2 block">
+                    E-mail do Comprador
                   </Label>
                   <Input
-                    id="cpf"
-                    name="cpf"
-                    value={form.cpf}
-                    onChange={handleChange}
-                    className="border-foreground/20 bg-transparent font-body focus:border-foreground"
-                    placeholder="000.000.000-00"
-                  />
-                  {errors.cpf && <p className="text-destructive text-xs mt-1 font-body">{errors.cpf}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="nascimento" className="font-body text-xs uppercase tracking-widest mb-2 block">
-                    Data de Nascimento
-                  </Label>
-                  <Input
-                    id="nascimento"
-                    name="nascimento"
-                    type="date"
-                    value={form.nascimento}
-                    onChange={handleChange}
-                    className="border-foreground/20 bg-transparent font-body focus:border-foreground"
-                  />
-                  {errors.nascimento && <p className="text-destructive text-xs mt-1 font-body">{errors.nascimento}</p>}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="cep" className="font-body text-xs uppercase tracking-widest mb-2 block">
-                    CEP
-                  </Label>
-                  <Input
-                    id="cep"
-                    name="cep"
-                    value={form.cep}
-                    onChange={handleChange}
-                    className="border-foreground/20 bg-transparent font-body focus:border-foreground"
-                    placeholder="00000-000"
-                  />
-                  {errors.cep && <p className="text-destructive text-xs mt-1 font-body">{errors.cep}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="email" className="font-body text-xs uppercase tracking-widest mb-2 block">
-                    E-mail
-                  </Label>
-                  <Input
-                    id="email"
-                    name="email"
                     type="email"
-                    value={form.email}
-                    onChange={handleChange}
+                    value={buyerEmail}
+                    onChange={(e) => {
+                      setBuyerEmail(e.target.value);
+                      setBuyerEmailError("");
+                    }}
                     className="border-foreground/20 bg-transparent font-body focus:border-foreground"
-                    placeholder="seu@email.com"
+                    placeholder="email-do-comprador@email.com"
                   />
-                  {errors.email && <p className="text-destructive text-xs mt-1 font-body">{errors.email}</p>}
+                  {buyerEmailError && (
+                    <p className="text-destructive text-xs mt-1 font-body">{buyerEmailError}</p>
+                  )}
+                  <p className="text-xs text-muted-foreground mt-1 font-body">
+                    Este e-mail receberá o resumo do pedido e os links de transferência.
+                  </p>
                 </div>
               </div>
 
+              {/* Participants */}
+              {participants.map((p, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="p-6 border border-foreground/10 space-y-4 relative"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-display text-xl">
+                      Participante {index + 1}
+                    </h3>
+                    {participants.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeParticipant(index)}
+                        className="text-destructive hover:text-destructive/80 transition-colors p-1"
+                        title="Remover participante"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label className="font-body text-xs uppercase tracking-widest mb-2 block">
+                      Nome Completo
+                    </Label>
+                    <Input
+                      name="nome"
+                      value={p.nome}
+                      onChange={(e) => handleChange(index, e)}
+                      className="border-foreground/20 bg-transparent font-body focus:border-foreground"
+                      placeholder="Nome completo do participante"
+                    />
+                    {errors[index]?.nome && (
+                      <p className="text-destructive text-xs mt-1 font-body">{errors[index].nome}</p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="font-body text-xs uppercase tracking-widest mb-2 block">
+                        CPF
+                      </Label>
+                      <Input
+                        name="cpf"
+                        value={p.cpf}
+                        onChange={(e) => handleChange(index, e)}
+                        className="border-foreground/20 bg-transparent font-body focus:border-foreground"
+                        placeholder="000.000.000-00"
+                      />
+                      {errors[index]?.cpf && (
+                        <p className="text-destructive text-xs mt-1 font-body">{errors[index].cpf}</p>
+                      )}
+                    </div>
+                    <div>
+                      <Label className="font-body text-xs uppercase tracking-widest mb-2 block">
+                        Data de Nascimento
+                      </Label>
+                      <Input
+                        name="nascimento"
+                        type="date"
+                        value={p.nascimento}
+                        onChange={(e) => handleChange(index, e)}
+                        className="border-foreground/20 bg-transparent font-body focus:border-foreground"
+                      />
+                      {errors[index]?.nascimento && (
+                        <p className="text-destructive text-xs mt-1 font-body">{errors[index].nascimento}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="font-body text-xs uppercase tracking-widest mb-2 block">
+                        CEP
+                      </Label>
+                      <Input
+                        name="cep"
+                        value={p.cep}
+                        onChange={(e) => handleChange(index, e)}
+                        className="border-foreground/20 bg-transparent font-body focus:border-foreground"
+                        placeholder="00000-000"
+                      />
+                      {errors[index]?.cep && (
+                        <p className="text-destructive text-xs mt-1 font-body">{errors[index].cep}</p>
+                      )}
+                    </div>
+                    <div>
+                      <Label className="font-body text-xs uppercase tracking-widest mb-2 block">
+                        E-mail do Participante
+                      </Label>
+                      <Input
+                        name="email"
+                        type="email"
+                        value={p.email}
+                        onChange={(e) => handleChange(index, e)}
+                        className="border-foreground/20 bg-transparent font-body focus:border-foreground"
+                        placeholder="participante@email.com"
+                      />
+                      {errors[index]?.email && (
+                        <p className="text-destructive text-xs mt-1 font-body">{errors[index].email}</p>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+
+              {/* Add participant button */}
               <button
-                type="submit"
-                disabled={submitting}
-                className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity disabled:opacity-50"
+                type="button"
+                onClick={addParticipant}
+                className="w-full border border-dashed border-foreground/20 py-4 flex items-center justify-center gap-2 font-body text-sm text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
               >
-                {submitting ? "Enviando..." : "Prosseguir para pagamento"}
+                <Plus className="h-4 w-4" />
+                Adicionar outro participante
               </button>
 
-              <p className="font-body text-xs text-center text-muted-foreground">
-                Ao se inscrever, você concorda com nossos termos e política de privacidade.
-              </p>
+              {/* Summary */}
+              <div className="border-t border-foreground/10 pt-6">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="font-body text-sm text-muted-foreground">
+                    Total de inscrições
+                  </span>
+                  <span className="font-display text-2xl">
+                    {participants.length} {participants.length === 1 ? "ingresso" : "ingressos"}
+                  </span>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity disabled:opacity-50"
+                >
+                  {submitting ? "Enviando..." : "Confirmar Inscrições"}
+                </button>
+
+                <p className="font-body text-xs text-center text-muted-foreground mt-4">
+                  Ao se inscrever, você concorda com nossos termos e política de privacidade.
+                </p>
+              </div>
             </form>
           </motion.div>
         </div>

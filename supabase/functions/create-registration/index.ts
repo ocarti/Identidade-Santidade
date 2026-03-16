@@ -15,23 +15,58 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { nome, cpf, nascimento, cep, email } = await req.json();
+    const body = await req.json();
+    const { participants, buyer_email } = body;
 
-    // Server-side validation
-    if (!nome || typeof nome !== "string" || nome.trim().length < 3 || nome.trim().length > 100) {
-      return new Response(JSON.stringify({ error: "Nome inválido (3-100 caracteres)" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    // Validate buyer_email
+    if (!buyer_email || !emailRegex.test(buyer_email) || buyer_email.length > 255) {
+      return new Response(JSON.stringify({ error: "E-mail do comprador inválido" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
-    if (!cpf || !cpfRegex.test(cpf)) {
-      return new Response(JSON.stringify({ error: "CPF inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    // Validate participants array
+    if (!Array.isArray(participants) || participants.length === 0 || participants.length > 10) {
+      return new Response(JSON.stringify({ error: "Envie de 1 a 10 participantes" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
-    if (!cep || !cepRegex.test(cep)) {
-      return new Response(JSON.stringify({ error: "CEP inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-    if (!email || !emailRegex.test(email) || email.length > 255) {
-      return new Response(JSON.stringify({ error: "E-mail inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-    if (!nascimento) {
-      return new Response(JSON.stringify({ error: "Data de nascimento obrigatória" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    // Validate each participant
+    for (let i = 0; i < participants.length; i++) {
+      const p = participants[i];
+      if (!p.nome || typeof p.nome !== "string" || p.nome.trim().length < 3 || p.nome.trim().length > 100) {
+        return new Response(JSON.stringify({ error: `Participante ${i + 1}: Nome inválido (3-100 caracteres)` }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (!p.cpf || !cpfRegex.test(p.cpf)) {
+        return new Response(JSON.stringify({ error: `Participante ${i + 1}: CPF inválido` }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (!p.email || !emailRegex.test(p.email) || p.email.length > 255) {
+        return new Response(JSON.stringify({ error: `Participante ${i + 1}: E-mail inválido` }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (!p.nascimento) {
+        return new Response(JSON.stringify({ error: `Participante ${i + 1}: Data de nascimento obrigatória` }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (!p.cep || !cepRegex.test(p.cep)) {
+        return new Response(JSON.stringify({ error: `Participante ${i + 1}: CEP inválido` }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
     const supabase = createClient(
@@ -39,31 +74,59 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Check duplicate CPF
+    // Check duplicate CPFs
+    const cpfs = participants.map((p: any) => p.cpf);
     const { data: existing } = await supabase
       .from("registrations")
-      .select("id")
-      .eq("cpf", cpf)
-      .maybeSingle();
+      .select("cpf")
+      .in("cpf", cpfs);
 
-    if (existing) {
-      return new Response(JSON.stringify({ error: "CPF já cadastrado" }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (existing && existing.length > 0) {
+      const duplicates = existing.map((e: any) => e.cpf).join(", ");
+      return new Response(JSON.stringify({ error: `CPF(s) já cadastrado(s): ${duplicates}` }), {
+        status: 409,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    const { data, error } = await supabase.from("registrations").insert({
-      nome: nome.trim(),
-      cpf,
-      nascimento,
-      cep,
-      email: email.trim(),
-    }).select("id").single();
+    // Generate a shared order_id
+    const order_id = crypto.randomUUID();
+
+    // Insert all participants
+    const rows = participants.map((p: any) => ({
+      nome: p.nome.trim(),
+      cpf: p.cpf,
+      nascimento: p.nascimento,
+      cep: p.cep,
+      email: p.email.trim(),
+      buyer_email: buyer_email.trim(),
+      order_id,
+      qr_code_token: crypto.randomUUID(),
+      transfer_token: crypto.randomUUID(),
+    }));
+
+    const { data, error } = await supabase
+      .from("registrations")
+      .insert(rows)
+      .select("id, nome, email, qr_code_token, transfer_token");
 
     if (error) {
-      return new Response(JSON.stringify({ error: "Erro ao registrar inscrição" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      console.error("Insert error:", error);
+      return new Response(JSON.stringify({ error: "Erro ao registrar inscrições" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    return new Response(JSON.stringify({ id: data.id }), { status: 201, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-  } catch {
-    return new Response(JSON.stringify({ error: "Requisição inválida" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ order_id, registrations: data }), {
+      status: 201,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  } catch (err) {
+    console.error("Request error:", err);
+    return new Response(JSON.stringify({ error: "Requisição inválida" }), {
+      status: 400,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
