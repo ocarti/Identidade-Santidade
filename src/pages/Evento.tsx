@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { CalendarDays, MapPin, Clock, Mail } from "lucide-react";
-import gallery1 from "@/assets/gallery-1.jpg";
+import eventoHero from "@/assets/evento-hero.jpg";
 
 const faqItems = [
   {
@@ -104,7 +104,7 @@ export default function Evento() {
         {/* Hero banner */}
         <section className="relative h-[60vh] flex items-end overflow-hidden">
           <img
-            src={gallery1}
+            src={eventoHero}
             alt="Congresso Identidade Santidade"
             className="absolute inset-0 w-full h-full object-cover grayscale"
           />
