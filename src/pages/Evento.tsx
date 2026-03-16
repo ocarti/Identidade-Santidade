@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { CalendarDays, MapPin, Clock, Mail } from "lucide-react";
-import eventoHero from "@/assets/evento-hero.jpg";
+import eventoHero from "@/assets/hero-image-new.jpg";
 
 const faqItems = [
   {
