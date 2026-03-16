@@ -8,14 +8,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { CalendarDays, MapPin, Clock, Gift, Mail } from "lucide-react";
+import { CalendarDays, MapPin, Clock, Mail } from "lucide-react";
 import gallery1 from "@/assets/gallery-1.jpg";
 
 const faqItems = [
   {
     question: "Quando e onde acontecerá o congresso Identidade e Santidade?",
     answer:
-      "O Congresso Identidade & Santidade acontecerá nos dias 25 a 27 de Julho de 2025, na Igreja Batista Betel em Dois Vizinhos, PR.",
+      "O Congresso Identidade & Santidade acontecerá nos dias 24 a 26 de Julho de 2026, na Igreja Batista Betel em Dois Vizinhos, PR.",
   },
   {
     question: "Para quem é o Congresso Identidade & Santidade?",
@@ -31,11 +31,6 @@ const faqItems = [
     answer: "Sim. O ingresso dá direito a todas as sessões.",
   },
   {
-    question: "Os ingressos dão direito a brindes? Quais?",
-    answer:
-      "Sim. Ao adquirir o ingresso do evento você ganha também uma Bíblia de brochura + adesivo holográfico personalizado + pulseira de acesso (comum, em material de papel).",
-  },
-  {
     question: "Os ingressos dão direito à hospedagem e alimentação?",
     answer:
       "Não. A hospedagem e alimentação não estão inclusos no valor do ingresso. Esses são de responsabilidade de cada participante. O ingresso dá somente acesso ao congresso.",
@@ -43,7 +38,7 @@ const faqItems = [
   {
     question: "Quais documentos eu apresento na hora do Check-in?",
     answer:
-      "Você precisa levar somente o ingresso impresso ou apresentar o QR Code em seu smartphone.",
+      "Você precisa apresentar documento com foto e o ingresso impresso ou apresentar o QR Code em seu smartphone.",
   },
   {
     question: "Quais as formas de pagamento?",
@@ -68,7 +63,7 @@ const faqItems = [
   {
     question: "Reembolso",
     answer:
-      "Os ingressos poderão ser cancelados no prazo de 7 (sete) dias a contar da data de sua compra conforme estipulado no código de defesa do consumidor.\n\nApós os 7 (sete) dias, não haverá reembolso. Você poderá transferir o ingresso para outra pessoa, caso não puder comparecer ao evento.\n\nObservação: O não comparecimento ao evento não dá direito a reembolso da inscrição.",
+      "Os ingressos poderão ser cancelados no prazo de 7 (sete) dias a contar da data de sua compra conforme estipulado no código de defesa do consumidor.\n\nApós os 7 (sete) dias, não haverá reembolso. Você poderá transferir o ingresso para outra pessoa, caso não possa comparecer ao evento.\n\nObservação: O não comparecimento ao evento não dá direito a reembolso da inscrição.",
   },
   {
     question: "Qual a classificação etária?",
@@ -136,7 +131,7 @@ export default function Evento() {
               className="space-y-6"
             >
               <p className="font-body text-sm uppercase tracking-[0.3em] text-muted-foreground mb-2">
-                4ª Edição
+                5ª Edição
               </p>
               <h2 className="font-display text-5xl md:text-6xl mb-8">
                 Congresso Identidade & Santidade
@@ -144,7 +139,7 @@ export default function Evento() {
               <div className="space-y-6 font-body text-muted-foreground leading-relaxed text-lg">
                 <p>
                   O Congresso Identidade & Santidade é um de nossos principais
-                  eventos durante o ano. Essa será nossa 4ª edição onde nos
+                  eventos durante o ano. Essa será nossa 5ª edição onde nos
                   juntaremos para buscar a presença de Deus, receber direções e
                   até mesmo fazer conexões com outras pessoas.
                 </p>
@@ -154,7 +149,7 @@ export default function Evento() {
                   simplesmente incríveis...
                 </p>
                 <p className="font-display text-foreground text-2xl md:text-3xl leading-snug">
-                  Cremos que Deus tem algo específico reservado para 2025 e
+                  Cremos que Deus tem algo específico reservado para 2026 e
                   queremos você nessa com a gente!
                 </p>
               </div>
@@ -180,22 +175,17 @@ export default function Evento() {
               </h2>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
                   icon: CalendarDays,
                   title: "Data",
-                  desc: "25, 26 e 27 de Julho de 2025",
+                  desc: "24, 25 e 26 de Julho de 2026",
                 },
                 {
                   icon: MapPin,
                   title: "Local",
                   desc: "Igreja Batista Betel — Dois Vizinhos, PR",
-                },
-                {
-                  icon: Gift,
-                  title: "Brindes Inclusos",
-                  desc: "Bíblia + Adesivo holográfico + Pulseira de acesso",
                 },
                 {
                   icon: Mail,
@@ -243,18 +233,18 @@ export default function Evento() {
             <div className="space-y-8">
               {[
                 {
-                  day: "Dia 1 — Sexta, 25/07",
+                  day: "Dia 1 — Sexta, 24/07",
                   time: "Início às 20:00h",
                   detail: "Abertura do congresso com sessão noturna",
                 },
                 {
-                  day: "Dia 2 — Sábado, 26/07",
+                  day: "Dia 2 — Sábado, 25/07",
                   time: "Início às 08:00h",
                   detail:
                     "Programação durante todo o dia e noite com sessões e preletores",
                 },
                 {
-                  day: "Dia 3 — Domingo, 27/07",
+                  day: "Dia 3 — Domingo, 26/07",
                   time: "Início às 19:00h",
                   detail: "Encerramento com sessão especial",
                 },
