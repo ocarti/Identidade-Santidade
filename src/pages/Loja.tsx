@@ -292,6 +292,7 @@ export default function Loja() {
         </div>
       </main>
       <Footer />
+      <MarqueeBanner />
     </div>
   );
 }

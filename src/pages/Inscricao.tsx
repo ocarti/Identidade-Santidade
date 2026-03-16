@@ -167,6 +167,7 @@ export default function Inscricao() {
         </div>
       </main>
       <Footer />
+      <MarqueeBanner />
     </div>
   );
 }

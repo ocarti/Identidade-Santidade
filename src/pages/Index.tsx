@@ -5,6 +5,7 @@ import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { GallerySection } from "@/components/GallerySection";
 import { CTASection } from "@/components/CTASection";
 import { Footer } from "@/components/Footer";
+import { MarqueeBanner } from "@/components/MarqueeBanner";
 
 const Index = () => {
   return (
@@ -18,6 +19,7 @@ const Index = () => {
         <CTASection />
       </main>
       <Footer />
+      <MarqueeBanner />
     </div>
   );
 };

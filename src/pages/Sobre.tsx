@@ -180,6 +180,7 @@ export default function Sobre() {
         </section>
       </main>
       <Footer />
+      <MarqueeBanner />
 
       <ImageLightbox
         src={lightboxSrc}
