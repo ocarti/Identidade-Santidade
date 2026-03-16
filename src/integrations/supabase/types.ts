@@ -70,6 +70,7 @@ export type Database = {
       }
       registrations: {
         Row: {
+          buyer_email: string | null
           cep: string
           checked_in: boolean
           cpf: string
@@ -78,10 +79,14 @@ export type Database = {
           id: string
           nascimento: string
           nome: string
+          order_id: string | null
+          qr_code_token: string | null
           status_pagamento: Database["public"]["Enums"]["payment_status"]
           stripe_transaction_id: string | null
+          transfer_token: string | null
         }
         Insert: {
+          buyer_email?: string | null
           cep: string
           checked_in?: boolean
           cpf: string
@@ -90,10 +95,14 @@ export type Database = {
           id?: string
           nascimento: string
           nome: string
+          order_id?: string | null
+          qr_code_token?: string | null
           status_pagamento?: Database["public"]["Enums"]["payment_status"]
           stripe_transaction_id?: string | null
+          transfer_token?: string | null
         }
         Update: {
+          buyer_email?: string | null
           cep?: string
           checked_in?: boolean
           cpf?: string
@@ -102,8 +111,11 @@ export type Database = {
           id?: string
           nascimento?: string
           nome?: string
+          order_id?: string | null
+          qr_code_token?: string | null
           status_pagamento?: Database["public"]["Enums"]["payment_status"]
           stripe_transaction_id?: string | null
+          transfer_token?: string | null
         }
         Relationships: []
       }
