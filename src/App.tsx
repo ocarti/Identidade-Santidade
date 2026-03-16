@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Inscricao from "./pages/Inscricao";
 import Loja from "./pages/Loja";
 import Sobre from "./pages/Sobre";
+import Evento from "./pages/Evento";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
@@ -23,6 +24,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/sobre" element={<Sobre />} />
+          <Route path="/evento" element={<Evento />} />
           <Route path="/inscricao" element={<Inscricao />} />
           <Route path="/loja" element={<Loja />} />
           <Route path="/admin" element={<AdminRouteGuard><Admin /></AdminRouteGuard>} />
