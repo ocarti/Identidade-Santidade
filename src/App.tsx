@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Inscricao from "./pages/Inscricao";
 import Loja from "./pages/Loja";
 import Sobre from "./pages/Sobre";
+import Evento from "./pages/Evento";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
