@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { MarqueeBanner } from "@/components/MarqueeBanner";
 import { motion } from "framer-motion";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import gallery1 from "@/assets/gallery-1.jpg";
@@ -179,6 +180,7 @@ export default function Sobre() {
         </section>
       </main>
       <Footer />
+      <MarqueeBanner />
 
       <ImageLightbox
         src={lightboxSrc}

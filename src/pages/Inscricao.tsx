@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { MarqueeBanner } from "@/components/MarqueeBanner";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -166,6 +167,7 @@ export default function Inscricao() {
         </div>
       </main>
       <Footer />
+      <MarqueeBanner />
     </div>
   );
 }

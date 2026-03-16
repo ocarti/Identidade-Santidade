@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { MarqueeBanner } from "@/components/MarqueeBanner";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Plus, Minus, X, AlertTriangle } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -291,6 +292,7 @@ export default function Loja() {
         </div>
       </main>
       <Footer />
+      <MarqueeBanner />
     </div>
   );
 }
