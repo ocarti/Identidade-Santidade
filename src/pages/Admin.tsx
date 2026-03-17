@@ -19,6 +19,7 @@ type Sale = {
   product_id: string | null;
   created_at: string;
   product_name?: string;
+  status_pagamento: string;
 };
 
 type Registration = {
@@ -75,11 +76,11 @@ export default function Admin() {
   };
 
   const exportSales = () => {
-    const headers = ["Comprador", "E-mail", "CPF", "Produto", "Valor", "Data"];
+    const headers = ["Comprador", "E-mail", "CPF", "Produto", "Valor", "Status", "Data"];
     const rows = sales.map((s) => [
       s.nome_comprador, s.email_comprador, s.cpf_comprador ?? "—",
       s.product_name ?? "—", `R$ ${Number(s.valor).toFixed(2).replace(".", ",")}`,
-      new Date(s.created_at).toLocaleDateString("pt-BR"),
+      s.status_pagamento, new Date(s.created_at).toLocaleDateString("pt-BR"),
     ]);
     exportCSV("vendas.csv", headers, rows);
     toast.success("CSV de vendas exportado!");
@@ -122,13 +123,14 @@ export default function Admin() {
                   <TableHead className="font-body text-xs uppercase tracking-widest">CPF</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Produto</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Valor</TableHead>
+                  <TableHead className="font-body text-xs uppercase tracking-widest">Status</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Data</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {sales.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground font-body py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground font-body py-8">
                       Nenhuma venda encontrada.
                     </TableCell>
                   </TableRow>
@@ -140,6 +142,11 @@ export default function Admin() {
                       <TableCell className="font-body">{s.cpf_comprador ?? "—"}</TableCell>
                       <TableCell className="font-body">{s.product_name}</TableCell>
                       <TableCell className="font-body">R$ {Number(s.valor).toFixed(2).replace(".", ",")}</TableCell>
+                      <TableCell className="font-body">
+                        <span className={s.status_pagamento === "pago" ? "text-green-600 font-semibold" : "text-yellow-600 font-semibold"}>
+                          {s.status_pagamento === "pago" ? "Pago" : "Pendente"}
+                        </span>
+                      </TableCell>
                       <TableCell className="font-body">{new Date(s.created_at).toLocaleDateString("pt-BR")}</TableCell>
                     </TableRow>
                   ))

@@ -57,6 +57,7 @@ Deno.serve(async (req) => {
         cpf_comprador: cpf,
         product_id: item.product_id,
         valor: unitPrice * item.qty,
+        status_pagamento: "pendente",
       };
     });
 
