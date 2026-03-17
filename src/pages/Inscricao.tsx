@@ -34,6 +34,7 @@ export default function Inscricao() {
   const [errors, setErrors] = useState<Record<string, string>[]>([{}]);
   const [buyerEmailError, setBuyerEmailError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [cooldown, setCooldown] = useState(false);
 
   const addParticipant = () => {
     if (participants.length >= 10) {
