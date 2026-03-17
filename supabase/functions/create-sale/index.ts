@@ -82,8 +82,8 @@ Deno.serve(async (req) => {
       const unitPrice = priceMap.get(item.product_id);
       if (!unitPrice || !item.qty || item.qty < 1) throw new Error("Invalid item");
       return {
-        nome_comprador: nome.trim(),
-        email_comprador: email.trim(),
+        nome_comprador: sanitize(nome),
+        email_comprador: sanitize(email),
         cpf_comprador: cpf,
         product_id: item.product_id,
         valor: unitPrice * item.qty,
