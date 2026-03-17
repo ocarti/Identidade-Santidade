@@ -3,8 +3,22 @@ import { z } from "zod";
 const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 const cepRegex = /^\d{5}-?\d{3}$/;
 
+/** Strip HTML tags and trim to prevent XSS injection */
+function sanitize(val: string): string {
+  return val.replace(/<[^>]*>/g, "").trim();
+}
+
+const sanitizedString = (min: number, max: number, label: string) =>
+  z.string()
+    .transform(sanitize)
+    .pipe(
+      z.string()
+        .min(min, `${label} deve ter pelo menos ${min} caracteres`)
+        .max(max, `${label} deve ter no máximo ${max} caracteres`)
+    );
+
 export const registrationSchema = z.object({
-  nome: z.string().trim().min(3, "Nome deve ter pelo menos 3 caracteres").max(100, "Nome deve ter no máximo 100 caracteres"),
+  nome: sanitizedString(3, 100, "Nome"),
   cpf: z.string().regex(cpfRegex, "CPF inválido. Use o formato 000.000.000-00"),
   nascimento: z.string().min(1, "Data de nascimento é obrigatória").refine((val) => {
     if (!val) return false;
@@ -16,12 +30,12 @@ export const registrationSchema = z.object({
     return age >= 8;
   }, "Inscrições online são apenas para maiores de 8 anos. Menores de 8 anos têm entrada gratuita e não precisam de inscrição prévia"),
   cep: z.string().regex(cepRegex, "CEP inválido. Use o formato 00000-000"),
-  email: z.string().trim().email("E-mail inválido").max(255, "E-mail muito longo"),
+  email: z.string().transform(sanitize).pipe(z.string().email("E-mail inválido").max(255, "E-mail muito longo")),
 });
 
 export const saleCheckoutSchema = z.object({
-  nome: z.string().trim().min(3, "Nome deve ter pelo menos 3 caracteres").max(100, "Nome deve ter no máximo 100 caracteres"),
-  email: z.string().trim().email("E-mail inválido").max(255, "E-mail muito longo"),
+  nome: sanitizedString(3, 100, "Nome"),
+  email: z.string().transform(sanitize).pipe(z.string().email("E-mail inválido").max(255, "E-mail muito longo")),
   cpf: z.string().regex(cpfRegex, "CPF inválido. Use o formato 000.000.000-00"),
 });
 
