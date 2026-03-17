@@ -46,17 +46,6 @@ export default function TransferirIngresso() {
     }
 
     const fetchRegistration = async () => {
-      const { data, error: fnError } = await supabase.functions.invoke(
-        "transfer-registration",
-        {
-          method: "GET",
-          body: undefined,
-          headers: {},
-        }
-      );
-
-      // Since supabase.functions.invoke doesn't support GET with query params easily,
-      // we'll use fetch directly
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/transfer-registration?token=${token}`;
       const response = await fetch(url, {
         headers: {
