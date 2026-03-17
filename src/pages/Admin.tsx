@@ -130,7 +130,7 @@ export default function Admin() {
               <TableBody>
                 {sales.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground font-body py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground font-body py-8">
                       Nenhuma venda encontrada.
                     </TableCell>
                   </TableRow>
