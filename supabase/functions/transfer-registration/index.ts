@@ -135,9 +135,9 @@ Deno.serve(async (req) => {
       const { data, error } = await supabase
         .from("registrations")
         .update({
-          nome: novo_nome.trim(),
+          nome: sanitize(novo_nome),
           cpf: novo_cpf,
-          email: novo_email.trim(),
+          email: sanitize(novo_email),
           qr_code_token: new_qr_code_token,
           transfer_token: new_transfer_token,
         })
