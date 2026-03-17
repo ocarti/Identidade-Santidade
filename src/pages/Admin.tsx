@@ -19,6 +19,7 @@ type Sale = {
   product_id: string | null;
   created_at: string;
   product_name?: string;
+  status_pagamento: string;
 };
 
 type Registration = {
