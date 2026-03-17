@@ -242,6 +242,8 @@ export default function Inscricao() {
                         name="cpf"
                         value={p.cpf}
                         onChange={(e) => handleChange(index, e)}
+                        onBlur={() => handleBlur(index, "cpf")}
+                        required
                         className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                         placeholder="000.000.000-00"
                       />
