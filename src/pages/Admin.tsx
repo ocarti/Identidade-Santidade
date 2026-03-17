@@ -76,11 +76,11 @@ export default function Admin() {
   };
 
   const exportSales = () => {
-    const headers = ["Comprador", "E-mail", "CPF", "Produto", "Valor", "Data"];
+    const headers = ["Comprador", "E-mail", "CPF", "Produto", "Valor", "Status", "Data"];
     const rows = sales.map((s) => [
       s.nome_comprador, s.email_comprador, s.cpf_comprador ?? "—",
       s.product_name ?? "—", `R$ ${Number(s.valor).toFixed(2).replace(".", ",")}`,
-      new Date(s.created_at).toLocaleDateString("pt-BR"),
+      s.status_pagamento, new Date(s.created_at).toLocaleDateString("pt-BR"),
     ]);
     exportCSV("vendas.csv", headers, rows);
     toast.success("CSV de vendas exportado!");
