@@ -136,12 +136,12 @@ Deno.serve(async (req) => {
 
     // Insert all participants
     const rows = participants.map((p: any) => ({
-      nome: p.nome.trim(),
+      nome: sanitize(p.nome),
       cpf: p.cpf,
       nascimento: p.nascimento,
       cep: p.cep,
-      email: p.email.trim(),
-      buyer_email: buyer_email.trim(),
+      email: sanitize(p.email),
+      buyer_email: sanitize(buyer_email),
       order_id,
       qr_code_token: crypto.randomUUID(),
       transfer_token: crypto.randomUUID(),
