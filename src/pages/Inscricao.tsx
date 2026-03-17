@@ -34,6 +34,7 @@ export default function Inscricao() {
   const [errors, setErrors] = useState<Record<string, string>[]>([{}]);
   const [buyerEmailError, setBuyerEmailError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [cooldown, setCooldown] = useState(false);
 
   const addParticipant = () => {
     if (participants.length >= 10) {
@@ -85,7 +86,10 @@ export default function Inscricao() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (cooldown) {
+      toast.error("Aguarde antes de enviar novamente.");
+      return;
+    }
     // Validate buyer email
     const emailCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!buyerEmail || !emailCheck.test(buyerEmail)) {
@@ -126,6 +130,8 @@ export default function Inscricao() {
     if (error || (data && data.error)) {
       toast.error(data?.error || "Erro ao enviar inscrições. Tente novamente.");
       setSubmitting(false);
+      setCooldown(true);
+      setTimeout(() => setCooldown(false), 30_000);
       return;
     }
 

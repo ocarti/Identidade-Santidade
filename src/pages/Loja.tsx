@@ -55,8 +55,14 @@ export default function Loja() {
 
   const cartTotal = cart.reduce((sum, i) => sum + i.preco * i.qty, 0);
 
+  const [cooldown, setCooldown] = useState(false);
+
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (cooldown) {
+      toast.error("Aguarde antes de enviar novamente.");
+      return;
+    }
     if (!accepted) {
       toast.error("Confirme que entendeu a forma de entrega.");
       return;
@@ -88,6 +94,8 @@ export default function Loja() {
     if (error || (data && data.error)) {
       toast.error(data?.error || "Erro ao processar compra. Tente novamente.");
       setSubmitting(false);
+      setCooldown(true);
+      setTimeout(() => setCooldown(false), 30_000);
       return;
     }
 
