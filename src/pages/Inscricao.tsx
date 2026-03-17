@@ -154,9 +154,12 @@ export default function Inscricao() {
               Evento 2026
             </p>
             <h1 className="font-display text-5xl md:text-6xl mb-2">Inscrição</h1>
-            <p className="font-body text-muted-foreground mb-10">
+            <p className="font-body text-muted-foreground mb-6">
               Preencha os dados de cada participante. Você pode inscrever várias pessoas de uma vez.
             </p>
+            <div className="bg-accent/50 border border-accent p-4 mb-10 font-body text-sm text-foreground/80">
+              ⚠️ Crianças menores de 8 anos não pagam e não precisam de inscrição pelo site.
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Buyer email */}

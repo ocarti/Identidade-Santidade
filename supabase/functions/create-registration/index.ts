@@ -61,6 +61,18 @@ Deno.serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
+      // Age validation: must be 8+
+      const birth = new Date(p.nascimento);
+      const now = new Date();
+      let age = now.getFullYear() - birth.getFullYear();
+      const m = now.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
+      if (age < 8) {
+        return new Response(JSON.stringify({ error: `Participante ${i + 1}: Inscrições online são apenas para maiores de 8 anos. Menores de 8 anos têm entrada gratuita e não precisam de inscrição prévia` }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
       if (!p.cep || !cepRegex.test(p.cep)) {
         return new Response(JSON.stringify({ error: `Participante ${i + 1}: CEP inválido` }), {
           status: 400,
