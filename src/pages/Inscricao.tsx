@@ -169,16 +169,18 @@ export default function Inscricao() {
                   <Label className="font-body text-xs uppercase tracking-widest mb-2 block">
                     E-mail do Comprador
                   </Label>
-                  <Input
-                    type="email"
-                    value={buyerEmail}
-                    onChange={(e) => {
-                      setBuyerEmail(e.target.value);
-                      setBuyerEmailError("");
-                    }}
-                    className="border-foreground/20 bg-transparent font-body focus:border-foreground"
-                    placeholder="email-do-comprador@email.com"
-                  />
+                    <Input
+                      type="email"
+                      value={buyerEmail}
+                      onChange={(e) => {
+                        setBuyerEmail(e.target.value);
+                        setBuyerEmailError("");
+                      }}
+                      onBlur={handleBuyerEmailBlur}
+                      required
+                      className="border-foreground/20 bg-transparent font-body focus:border-foreground"
+                      placeholder="email-do-comprador@email.com"
+                    />
                   {buyerEmailError && (
                     <p className="text-destructive text-xs mt-1 font-body">{buyerEmailError}</p>
                   )}
