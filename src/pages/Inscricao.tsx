@@ -279,6 +279,8 @@ export default function Inscricao() {
                         name="cep"
                         value={p.cep}
                         onChange={(e) => handleChange(index, e)}
+                        onBlur={() => handleBlur(index, "cep")}
+                        required
                         className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                         placeholder="00000-000"
                       />
