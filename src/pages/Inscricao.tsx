@@ -54,9 +54,33 @@ export default function Inscricao() {
     const updated = [...participants];
     updated[index] = { ...updated[index], [e.target.name]: e.target.value };
     setParticipants(updated);
+    // Clear error on change
     const updatedErrors = [...errors];
     updatedErrors[index] = { ...updatedErrors[index], [e.target.name]: "" };
     setErrors(updatedErrors);
+  };
+
+  const handleBlur = (index: number, field: string) => {
+    const p = participants[index];
+    const result = registrationSchema.shape[field as keyof typeof registrationSchema.shape]?.safeParse(
+      (p as any)[field]
+    );
+    if (result && !result.success) {
+      const updatedErrors = [...errors];
+      updatedErrors[index] = { ...updatedErrors[index], [field]: result.error.errors[0]?.message || "Campo inválido" };
+      setErrors(updatedErrors);
+    }
+  };
+
+  const handleBuyerEmailBlur = () => {
+    const emailCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!buyerEmail) {
+      setBuyerEmailError("E-mail do comprador é obrigatório");
+    } else if (!emailCheck.test(buyerEmail)) {
+      setBuyerEmailError("E-mail do comprador inválido");
+    } else {
+      setBuyerEmailError("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
