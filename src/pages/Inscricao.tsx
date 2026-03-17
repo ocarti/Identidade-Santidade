@@ -223,6 +223,8 @@ export default function Inscricao() {
                       name="nome"
                       value={p.nome}
                       onChange={(e) => handleChange(index, e)}
+                      onBlur={() => handleBlur(index, "nome")}
+                      required
                       className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                       placeholder="Nome completo do participante"
                     />
