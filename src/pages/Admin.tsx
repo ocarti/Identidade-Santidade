@@ -142,6 +142,11 @@ export default function Admin() {
                       <TableCell className="font-body">{s.cpf_comprador ?? "—"}</TableCell>
                       <TableCell className="font-body">{s.product_name}</TableCell>
                       <TableCell className="font-body">R$ {Number(s.valor).toFixed(2).replace(".", ",")}</TableCell>
+                      <TableCell className="font-body">
+                        <span className={s.status_pagamento === "pago" ? "text-green-600 font-semibold" : "text-yellow-600 font-semibold"}>
+                          {s.status_pagamento === "pago" ? "Pago" : "Pendente"}
+                        </span>
+                      </TableCell>
                       <TableCell className="font-body">{new Date(s.created_at).toLocaleDateString("pt-BR")}</TableCell>
                     </TableRow>
                   ))
