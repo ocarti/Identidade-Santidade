@@ -9,6 +9,11 @@ const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 const cepRegex = /^\d{5}-?\d{3}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** Strip HTML tags to prevent XSS/injection */
+function sanitize(val: string): string {
+  return val.replace(/<[^>]*>/g, "").trim();
+}
+
 // Rate limiting: max 5 requests per IP per 60 seconds
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 5;
