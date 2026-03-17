@@ -94,6 +94,8 @@ export default function Loja() {
     if (error || (data && data.error)) {
       toast.error(data?.error || "Erro ao processar compra. Tente novamente.");
       setSubmitting(false);
+      setCooldown(true);
+      setTimeout(() => setCooldown(false), 30_000);
       return;
     }
 
