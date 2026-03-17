@@ -130,6 +130,8 @@ export default function Inscricao() {
     if (error || (data && data.error)) {
       toast.error(data?.error || "Erro ao enviar inscrições. Tente novamente.");
       setSubmitting(false);
+      setCooldown(true);
+      setTimeout(() => setCooldown(false), 30_000);
       return;
     }
 
