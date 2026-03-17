@@ -297,6 +297,8 @@ export default function Inscricao() {
                         type="email"
                         value={p.email}
                         onChange={(e) => handleChange(index, e)}
+                        onBlur={() => handleBlur(index, "email")}
+                        required
                         className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                         placeholder="participante@email.com"
                       />
