@@ -127,6 +127,7 @@ export type Database = {
           id: string
           nome_comprador: string
           product_id: string | null
+          status_pagamento: string
           stripe_transaction_id: string | null
           valor: number
         }
@@ -137,6 +138,7 @@ export type Database = {
           id?: string
           nome_comprador: string
           product_id?: string | null
+          status_pagamento?: string
           stripe_transaction_id?: string | null
           valor: number
         }
@@ -147,6 +149,7 @@ export type Database = {
           id?: string
           nome_comprador?: string
           product_id?: string | null
+          status_pagamento?: string
           stripe_transaction_id?: string | null
           valor?: number
         }
