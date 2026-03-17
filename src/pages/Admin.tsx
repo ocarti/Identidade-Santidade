@@ -123,6 +123,7 @@ export default function Admin() {
                   <TableHead className="font-body text-xs uppercase tracking-widest">CPF</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Produto</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Valor</TableHead>
+                  <TableHead className="font-body text-xs uppercase tracking-widest">Status</TableHead>
                   <TableHead className="font-body text-xs uppercase tracking-widest">Data</TableHead>
                 </TableRow>
               </TableHeader>
