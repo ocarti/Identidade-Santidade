@@ -54,9 +54,33 @@ export default function Inscricao() {
     const updated = [...participants];
     updated[index] = { ...updated[index], [e.target.name]: e.target.value };
     setParticipants(updated);
+    // Clear error on change
     const updatedErrors = [...errors];
     updatedErrors[index] = { ...updatedErrors[index], [e.target.name]: "" };
     setErrors(updatedErrors);
+  };
+
+  const handleBlur = (index: number, field: string) => {
+    const p = participants[index];
+    const result = registrationSchema.shape[field as keyof typeof registrationSchema.shape]?.safeParse(
+      (p as any)[field]
+    );
+    if (result && !result.success) {
+      const updatedErrors = [...errors];
+      updatedErrors[index] = { ...updatedErrors[index], [field]: result.error.errors[0]?.message || "Campo inválido" };
+      setErrors(updatedErrors);
+    }
+  };
+
+  const handleBuyerEmailBlur = () => {
+    const emailCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!buyerEmail) {
+      setBuyerEmailError("E-mail do comprador é obrigatório");
+    } else if (!emailCheck.test(buyerEmail)) {
+      setBuyerEmailError("E-mail do comprador inválido");
+    } else {
+      setBuyerEmailError("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -145,16 +169,18 @@ export default function Inscricao() {
                   <Label className="font-body text-xs uppercase tracking-widest mb-2 block">
                     E-mail do Comprador
                   </Label>
-                  <Input
-                    type="email"
-                    value={buyerEmail}
-                    onChange={(e) => {
-                      setBuyerEmail(e.target.value);
-                      setBuyerEmailError("");
-                    }}
-                    className="border-foreground/20 bg-transparent font-body focus:border-foreground"
-                    placeholder="email-do-comprador@email.com"
-                  />
+                    <Input
+                      type="email"
+                      value={buyerEmail}
+                      onChange={(e) => {
+                        setBuyerEmail(e.target.value);
+                        setBuyerEmailError("");
+                      }}
+                      onBlur={handleBuyerEmailBlur}
+                      required
+                      className="border-foreground/20 bg-transparent font-body focus:border-foreground"
+                      placeholder="email-do-comprador@email.com"
+                    />
                   {buyerEmailError && (
                     <p className="text-destructive text-xs mt-1 font-body">{buyerEmailError}</p>
                   )}
@@ -197,6 +223,8 @@ export default function Inscricao() {
                       name="nome"
                       value={p.nome}
                       onChange={(e) => handleChange(index, e)}
+                      onBlur={() => handleBlur(index, "nome")}
+                      required
                       className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                       placeholder="Nome completo do participante"
                     />
@@ -214,6 +242,8 @@ export default function Inscricao() {
                         name="cpf"
                         value={p.cpf}
                         onChange={(e) => handleChange(index, e)}
+                        onBlur={() => handleBlur(index, "cpf")}
+                        required
                         className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                         placeholder="000.000.000-00"
                       />
@@ -230,6 +260,8 @@ export default function Inscricao() {
                         type="date"
                         value={p.nascimento}
                         onChange={(e) => handleChange(index, e)}
+                        onBlur={() => handleBlur(index, "nascimento")}
+                        required
                         className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                       />
                       {errors[index]?.nascimento && (
@@ -247,6 +279,8 @@ export default function Inscricao() {
                         name="cep"
                         value={p.cep}
                         onChange={(e) => handleChange(index, e)}
+                        onBlur={() => handleBlur(index, "cep")}
+                        required
                         className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                         placeholder="00000-000"
                       />
@@ -263,6 +297,8 @@ export default function Inscricao() {
                         type="email"
                         value={p.email}
                         onChange={(e) => handleChange(index, e)}
+                        onBlur={() => handleBlur(index, "email")}
+                        required
                         className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                         placeholder="participante@email.com"
                       />
