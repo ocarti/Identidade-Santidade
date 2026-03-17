@@ -86,7 +86,10 @@ export default function Inscricao() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (cooldown) {
+      toast.error("Aguarde antes de enviar novamente.");
+      return;
+    }
     // Validate buyer email
     const emailCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!buyerEmail || !emailCheck.test(buyerEmail)) {
