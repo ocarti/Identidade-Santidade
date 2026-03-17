@@ -260,6 +260,8 @@ export default function Inscricao() {
                         type="date"
                         value={p.nascimento}
                         onChange={(e) => handleChange(index, e)}
+                        onBlur={() => handleBlur(index, "nascimento")}
+                        required
                         className="border-foreground/20 bg-transparent font-body focus:border-foreground"
                       />
                       {errors[index]?.nascimento && (
