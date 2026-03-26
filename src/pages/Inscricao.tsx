@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
 import { motion } from "framer-motion";
