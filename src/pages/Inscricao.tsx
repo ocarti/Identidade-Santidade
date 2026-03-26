@@ -336,7 +336,6 @@ export default function Inscricao() {
                   <span className="font-display text-2xl">
                     R$ {(participants.length * 120).toFixed(2).replace(".", ",")}
                   </span>
-                  </span>
                 </div>
 
                 <button
