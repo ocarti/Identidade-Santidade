@@ -8,6 +8,7 @@ import Inscricao from "./pages/Inscricao";
 import InscricaoSucesso from "./pages/InscricaoSucesso";
 import TransferirIngresso from "./pages/TransferirIngresso";
 import Loja from "./pages/Loja";
+import LojaSucesso from "./pages/LojaSucesso";
 import Sobre from "./pages/Sobre";
 import Evento from "./pages/Evento";
 import Admin from "./pages/Admin";

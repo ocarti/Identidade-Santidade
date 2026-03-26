@@ -135,15 +135,13 @@ export default function Inscricao() {
       return;
     }
 
-    toast.success("Inscrições realizadas com sucesso!");
-    // Navigate to success page with order data
-    navigate("/inscricao/sucesso", {
-      state: {
-        order_id: data.order_id,
-        registrations: data.registrations,
-        buyer_email: buyerEmail.trim(),
-      },
-    });
+    // Redirect to Stripe Checkout
+    if (data?.url) {
+      window.location.href = data.url;
+    } else {
+      toast.error("Erro ao gerar link de pagamento.");
+      setSubmitting(false);
+    }
   };
 
   return (

@@ -99,12 +99,13 @@ export default function Loja() {
       return;
     }
 
-    toast.success("Compra registrada com sucesso! Retire seus produtos no checkout do evento.");
-    setCart([]);
-    setShowCheckout(false);
-    setForm({ nome: "", email: "", cpf: "" });
-    setAccepted(false);
-    setSubmitting(false);
+    // Redirect to Stripe Checkout
+    if (data?.url) {
+      window.location.href = data.url;
+    } else {
+      toast.error("Erro ao gerar link de pagamento.");
+      setSubmitting(false);
+    }
   };
 
   return (
