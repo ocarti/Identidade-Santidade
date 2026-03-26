@@ -8,6 +8,7 @@ import Inscricao from "./pages/Inscricao";
 import InscricaoSucesso from "./pages/InscricaoSucesso";
 import TransferirIngresso from "./pages/TransferirIngresso";
 import Loja from "./pages/Loja";
+import LojaSucesso from "./pages/LojaSucesso";
 import Sobre from "./pages/Sobre";
 import Evento from "./pages/Evento";
 import Admin from "./pages/Admin";
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/inscricao/sucesso" element={<InscricaoSucesso />} />
           <Route path="/ingresso/transferir" element={<TransferirIngresso />} />
           <Route path="/loja" element={<Loja />} />
+          <Route path="/loja/sucesso" element={<LojaSucesso />} />
           <Route path="/admin" element={<AdminRouteGuard><Admin /></AdminRouteGuard>} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="*" element={<NotFound />} />

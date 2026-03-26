@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
@@ -28,7 +27,6 @@ const emptyParticipant = (): Participant => ({
 });
 
 export default function Inscricao() {
-  const navigate = useNavigate();
   const [buyerEmail, setBuyerEmail] = useState("");
   const [participants, setParticipants] = useState<Participant[]>([emptyParticipant()]);
   const [errors, setErrors] = useState<Record<string, string>[]>([{}]);
@@ -135,15 +133,13 @@ export default function Inscricao() {
       return;
     }
 
-    toast.success("Inscrições realizadas com sucesso!");
-    // Navigate to success page with order data
-    navigate("/inscricao/sucesso", {
-      state: {
-        order_id: data.order_id,
-        registrations: data.registrations,
-        buyer_email: buyerEmail.trim(),
-      },
-    });
+    // Redirect to Stripe Checkout
+    if (data?.url) {
+      window.location.href = data.url;
+    } else {
+      toast.error("Erro ao gerar link de pagamento.");
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -333,10 +329,10 @@ export default function Inscricao() {
               <div className="border-t border-foreground/10 pt-6">
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-body text-sm text-muted-foreground">
-                    Total de inscrições
+                    {participants.length} {participants.length === 1 ? "ingresso" : "ingressos"}
                   </span>
                   <span className="font-display text-2xl">
-                    {participants.length} {participants.length === 1 ? "ingresso" : "ingressos"}
+                    R$ {(participants.length * 120).toFixed(2).replace(".", ",")}
                   </span>
                 </div>
 
@@ -345,7 +341,7 @@ export default function Inscricao() {
                   disabled={submitting}
                   className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity disabled:opacity-50"
                 >
-                  {submitting ? "Enviando..." : "Confirmar Inscrições"}
+                  {submitting ? "Redirecionando para pagamento..." : "Pagar e Confirmar Inscrições"}
                 </button>
 
                 <p className="font-body text-xs text-center text-muted-foreground mt-4">
