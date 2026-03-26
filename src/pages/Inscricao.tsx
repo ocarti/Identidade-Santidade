@@ -331,10 +331,11 @@ export default function Inscricao() {
               <div className="border-t border-foreground/10 pt-6">
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-body text-sm text-muted-foreground">
-                    Total de inscrições
+                    {participants.length} {participants.length === 1 ? "ingresso" : "ingressos"}
                   </span>
                   <span className="font-display text-2xl">
-                    {participants.length} {participants.length === 1 ? "ingresso" : "ingressos"}
+                    R$ {(participants.length * 120).toFixed(2).replace(".", ",")}
+                  </span>
                   </span>
                 </div>
 
