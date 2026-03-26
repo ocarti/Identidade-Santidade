@@ -291,7 +291,7 @@ export default function Loja() {
                       disabled={submitting || !accepted}
                       className="w-full font-body text-sm font-semibold uppercase tracking-widest py-6"
                     >
-                      {submitting ? "Processando..." : "Finalizar Compra"}
+                      {submitting ? "Redirecionando para pagamento..." : "Pagar e Finalizar Compra"}
                     </Button>
                   </form>
                 </motion.div>

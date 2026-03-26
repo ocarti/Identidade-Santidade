@@ -343,7 +343,7 @@ export default function Inscricao() {
                   disabled={submitting}
                   className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity disabled:opacity-50"
                 >
-                  {submitting ? "Enviando..." : "Confirmar Inscrições"}
+                  {submitting ? "Redirecionando para pagamento..." : "Pagar e Confirmar Inscrições"}
                 </button>
 
                 <p className="font-body text-xs text-center text-muted-foreground mt-4">
