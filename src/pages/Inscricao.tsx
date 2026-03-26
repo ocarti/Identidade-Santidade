@@ -28,7 +28,6 @@ const emptyParticipant = (): Participant => ({
 
 export default function Inscricao() {
   const [buyerEmail, setBuyerEmail] = useState("");
-  const [buyerEmail, setBuyerEmail] = useState("");
   const [participants, setParticipants] = useState<Participant[]>([emptyParticipant()]);
   const [errors, setErrors] = useState<Record<string, string>[]>([{}]);
   const [buyerEmailError, setBuyerEmailError] = useState("");
