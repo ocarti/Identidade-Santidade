@@ -1,42 +1,65 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logoBlack from "@/assets/logo-black.png";
+import { useCart } from "@/contexts/CartContext";
+import { useCustomerAuth } from "@/contexts/CustomerAuthContext";
 
 const navItems = [
-  { label: "Início", href: "/" },
-  { label: "Sobre", href: "/sobre" },
-  { label: "Evento", href: "/evento" },
-  { label: "Loja", href: "/loja" },
+  { label: "Loja", href: "/ecommerce" },
 ];
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { totalItems } = useCart();
+  const { user, signOut } = useCustomerAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    setOpen(false);
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border">
       <div className="px-4 flex items-center justify-between h-16">
         <Link to="/" className="flex items-center">
-          <img src={logoBlack} alt="Identidade Santidade" className="h-[8.5rem]" />
+          <img src={logoBlack} alt="Identidade Santidade" className="h-[6rem]" />
         </Link>
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className="font-body text-sm font-medium uppercase tracking-widest hover:opacity-60 transition-opacity"
-            >
-              {item.label}
-            </Link>
-          ))}
           <Link
-            to="/inscricao"
+            to="/ecommerce"
             className="bg-primary text-primary-foreground px-6 py-2 font-body text-sm font-semibold uppercase tracking-widest hover:opacity-80 transition-opacity"
           >
-            Inscreva-se
+            Loja
+          </Link>
+          <Link
+            to={user ? "/ecommerce/conta" : "/ecommerce/login"}
+            className="font-body text-sm font-medium uppercase tracking-widest hover:opacity-60 transition-opacity flex items-center gap-1"
+          >
+            <User size={15} />
+            {user ? "Minha Conta" : "Entrar"}
+          </Link>
+          {user && (
+            <button
+              onClick={handleSignOut}
+              className="font-body text-sm font-medium uppercase tracking-widest hover:opacity-60 transition-opacity flex items-center gap-1 text-foreground"
+            >
+              <LogOut size={15} />
+              Sair
+            </button>
+          )}
+          <Link to="/ecommerce/carrinho" className="relative p-2 hover:opacity-60 transition-opacity">
+            <ShoppingCart size={20} />
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center font-body font-semibold">
+                {totalItems > 9 ? "9+" : totalItems}
+              </span>
+            )}
           </Link>
         </nav>
 
@@ -60,23 +83,29 @@ export function Header() {
             className="md:hidden border-t border-border overflow-hidden bg-background"
           >
             <nav className="container flex flex-col gap-4 py-6">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className="font-body text-lg uppercase tracking-widest"
-                  onClick={() => setOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
               <Link
-                to="/inscricao"
+                to="/ecommerce"
                 className="bg-primary text-primary-foreground px-6 py-3 font-body text-center text-sm font-semibold uppercase tracking-widest"
                 onClick={() => setOpen(false)}
               >
-                Inscreva-se
+                Loja
               </Link>
+              <Link
+                to={user ? "/ecommerce/conta" : "/ecommerce/login"}
+                className="font-body text-lg uppercase tracking-widest"
+                onClick={() => setOpen(false)}
+              >
+                {user ? "Minha Conta" : "Entrar"}
+              </Link>
+              {user && (
+                <button
+                  onClick={handleSignOut}
+                  className="font-body text-lg uppercase tracking-widest text-left flex items-center gap-2 text-foreground"
+                >
+                  <LogOut size={18} />
+                  Sair
+                </button>
+              )}
             </nav>
           </motion.div>
         )}

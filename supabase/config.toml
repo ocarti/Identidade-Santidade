@@ -1,13 +1,13 @@
-project_id = "xyfijjwjalqwessnrxgw"
+project_id = "kvlyupiwtuztyzjmltzf"
 
 [functions.create-registration]
-verify_jwt = false
-
-[functions.create-sale]
 verify_jwt = false
 
 [functions.transfer-registration]
 verify_jwt = false
 
 [functions.verify-payment]
+verify_jwt = false
+
+[functions.create-ecommerce-checkout]
 verify_jwt = false

@@ -33,11 +33,28 @@ export const registrationSchema = z.object({
   email: z.string().transform(sanitize).pipe(z.string().email("E-mail inválido").max(255, "E-mail muito longo")),
 });
 
-export const saleCheckoutSchema = z.object({
+export const customerSignUpSchema = z.object({
   nome: sanitizedString(3, 100, "Nome"),
   email: z.string().transform(sanitize).pipe(z.string().email("E-mail inválido").max(255, "E-mail muito longo")),
-  cpf: z.string().regex(cpfRegex, "CPF inválido. Use o formato 000.000.000-00"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres").max(128, "Senha muito longa"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "As senhas não coincidem",
+  path: ["confirmPassword"],
+});
+
+export const customerLoginSchema = z.object({
+  email: z.string().transform(sanitize).pipe(z.string().email("E-mail inválido")),
+  password: z.string().min(1, "Senha é obrigatória"),
+});
+
+export const customerProfileSchema = z.object({
+  nome: sanitizedString(3, 100, "Nome"),
+  cpf: z.string().regex(cpfRegex, "CPF inválido. Use o formato 000.000.000-00").optional().or(z.literal("")),
+  telefone: z.string().max(20, "Telefone muito longo").optional().or(z.literal("")),
 });
 
 export type RegistrationForm = z.infer<typeof registrationSchema>;
-export type SaleCheckoutForm = z.infer<typeof saleCheckoutSchema>;
+export type CustomerSignUpForm = z.infer<typeof customerSignUpSchema>;
+export type CustomerLoginForm = z.infer<typeof customerLoginSchema>;
+export type CustomerProfileForm = z.infer<typeof customerProfileSchema>;

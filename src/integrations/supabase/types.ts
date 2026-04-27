@@ -41,28 +41,166 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_profiles: {
+        Row: {
+          id: string
+          user_id: string
+          nome: string
+          email: string
+          cpf: string | null
+          telefone: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          nome: string
+          email: string
+          cpf?: string | null
+          telefone?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          nome?: string
+          email?: string
+          cpf?: string | null
+          telefone?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      customer_group_members: {
+        Row: {
+          id: string
+          user_id: string
+          nome: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          nome: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          nome?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      order_items: {
+        Row: {
+          id: string
+          order_id: string
+          product_id: string
+          quantidade: number
+          preco_unitario: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          product_id: string
+          quantidade?: number
+          preco_unitario: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          product_id?: string
+          quantidade?: number
+          preco_unitario?: number
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          id: string
+          user_id: string
+          status: Database["public"]["Enums"]["order_status"]
+          total: number
+          stripe_session_id: string | null
+          stripe_payment_intent: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          status?: Database["public"]["Enums"]["order_status"]
+          total: number
+          stripe_session_id?: string | null
+          stripe_payment_intent?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          total?: number
+          stripe_session_id?: string | null
+          stripe_payment_intent?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           arquivo_url: string | null
+          ativo: boolean
           created_at: string
           descricao: string | null
+          estoque: number | null
           id: string
+          imagem_url: string | null
           nome: string
           preco: number
         }
         Insert: {
           arquivo_url?: string | null
+          ativo?: boolean
           created_at?: string
           descricao?: string | null
+          estoque?: number | null
           id?: string
+          imagem_url?: string | null
           nome: string
           preco: number
         }
         Update: {
           arquivo_url?: string | null
+          ativo?: boolean
           created_at?: string
           descricao?: string | null
+          estoque?: number | null
           id?: string
+          imagem_url?: string | null
           nome?: string
           preco?: number
         }
@@ -119,50 +257,6 @@ export type Database = {
         }
         Relationships: []
       }
-      sales: {
-        Row: {
-          cpf_comprador: string | null
-          created_at: string
-          email_comprador: string
-          id: string
-          nome_comprador: string
-          product_id: string | null
-          status_pagamento: string
-          stripe_transaction_id: string | null
-          valor: number
-        }
-        Insert: {
-          cpf_comprador?: string | null
-          created_at?: string
-          email_comprador: string
-          id?: string
-          nome_comprador: string
-          product_id?: string | null
-          status_pagamento?: string
-          stripe_transaction_id?: string | null
-          valor: number
-        }
-        Update: {
-          cpf_comprador?: string | null
-          created_at?: string
-          email_comprador?: string
-          id?: string
-          nome_comprador?: string
-          product_id?: string | null
-          status_pagamento?: string
-          stripe_transaction_id?: string | null
-          valor?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "sales_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       user_roles: {
         Row: {
           id: string
@@ -195,7 +289,8 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "customer"
+      order_status: "pendente" | "pago" | "cancelado" | "reembolsado"
       payment_status: "pendente" | "pago"
     }
     CompositeTypes: {
@@ -324,7 +419,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "customer"],
+      order_status: ["pendente", "pago", "cancelado", "reembolsado"],
       payment_status: ["pendente", "pago"],
     },
   },

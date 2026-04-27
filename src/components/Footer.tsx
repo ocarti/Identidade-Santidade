@@ -1,25 +1,8 @@
-import { Instagram, Youtube } from "lucide-react";
-import logoWhite from "@/assets/logo-white.png";
-
 export function Footer() {
   return (
     <footer className="border-t border-border bg-primary text-primary-foreground pb-14">
-      <div className="px-4 py-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <img src={logoWhite} alt="Identidade Santidade" className="h-36" />
-            <p className="font-body text-sm opacity-70 mt-1">"Sede santos, porque Eu sou santo." — 1 Pedro 1:16</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <a href="#" className="hover:opacity-60 transition-opacity" aria-label="Instagram">
-              <Instagram size={20} />
-            </a>
-            <a href="#" className="hover:opacity-60 transition-opacity" aria-label="YouTube">
-              <Youtube size={20} />
-            </a>
-          </div>
-        </div>
-        <div className="mt-8 pt-6 border-t border-primary-foreground/20 text-center">
+      <div className="px-4 py-6">
+        <div className="text-center">
           <p className="font-body text-xs opacity-50">
             © 2026 Identidade Santidade. Todos os direitos reservados.
           </p>

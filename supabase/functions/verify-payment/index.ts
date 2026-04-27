@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
+      apiVersion: "2024-06-20",
     });
 
     const session = await stripe.checkout.sessions.retrieve(session_id);
@@ -70,22 +70,20 @@ Deno.serve(async (req) => {
       });
     }
 
-    if (type === "sale") {
-      const saleIdsStr = session.metadata?.sale_ids;
-      const sale_order_id = session.metadata?.sale_order_id;
-
-      if (saleIdsStr) {
-        const saleIds = JSON.parse(saleIdsStr);
-        await supabase
-          .from("sales")
-          .update({ status_pagamento: "pago", stripe_transaction_id: stripePaymentId })
-          .in("id", saleIds);
+    if (type === "ecommerce") {
+      const order_id = session.metadata?.order_id;
+      if (!order_id) {
+        return new Response(JSON.stringify({ error: "order_id não encontrado" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
 
-      return new Response(JSON.stringify({
-        type: "sale",
-        sale_order_id,
-      }), {
+      await supabase
+        .from("orders")
+        .update({ status: "pago", stripe_payment_intent: stripePaymentId })
+        .eq("id", order_id);
+
+      return new Response(JSON.stringify({ type: "ecommerce", order_id }), {
         status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
