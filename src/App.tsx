@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import TransferirIngresso from "./pages/TransferirIngresso";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import { AdminRouteGuard } from "./components/AdminRouteGuard";
 import { CustomerRouteGuard } from "./components/CustomerRouteGuard";
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="/loja" element={<Navigate to="/ecommerce" replace />} />
               <Route path="/admin" element={<AdminRouteGuard><Admin /></AdminRouteGuard>} />
               <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/dashboard" element={<AdminRouteGuard><Dashboard /></AdminRouteGuard>} />
 
               {/* E-Commerce */}
               <Route path="/ecommerce" element={<Catalogo />} />

@@ -11,7 +11,7 @@ Projeto do evento **Identidade Santidade 2026**: site institucional + e-commerce
 - **Framer Motion 12** — usar `framer-motion`, não `motion/react`
 - **React Router v6**
 - **Supabase** (auth, banco PostgreSQL, Storage, Edge Functions)
-- **Stripe** (pagamentos via Edge Function `create-ecommerce-checkout`)
+- **Asaas** (pagamentos PIX/boleto/cartão via Edge Functions — `ASAAS_API_URL`, `ASAAS_API_KEY`, `ASAAS_WEBHOOK_TOKEN`)
 - **Zod** + validações em `src/lib/validations.ts`
 
 ---
@@ -66,7 +66,7 @@ Ordem atual: `HeroSection` → `AboutSection` → `TestimonialsSection` → `Gal
 |---|---|
 | `customer_profiles` | Perfil do cliente (nome, email, cpf, telefone) — criado automaticamente via trigger `on_auth_user_created_customer` ao cadastrar |
 | `customer_group_members` | Membros do grupo do cliente (user_id, nome) — CRUD na página Minha Conta |
-| `orders` | Pedidos (user_id, total, status, stripe_session_id) |
+| `orders` | Pedidos (user_id, total, status, asaas_payment_id, asaas_invoice_url) |
 | `order_items` | Itens do pedido (order_id, product_id, quantidade, preco_unitario) |
 | `products` | Produtos da loja (nome, preco, imagem_url, estoque, ativo, tamanhos) |
 | `registrations` | Inscrições no evento |
@@ -106,7 +106,8 @@ USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 ## E-commerce
 
 - **Carrinho:** estado via `CartContext` (localStorage `ecommerce_cart`)
-- **Checkout:** Edge Function `create-ecommerce-checkout` (Stripe)
+- **Checkout:** Edge Function `create-ecommerce-checkout` (Asaas — PIX, Boleto, Cartão parcelado)
+- **CPF obrigatório:** Asaas exige CPF para criar Customer. Clientes sem CPF veem aviso em `/ecommerce/conta`
 - **Imagens de produtos:** armazenadas no Supabase Storage, bucket `products`
   - URL padrão: `https://kvlyupiwtuztyzjmltzf.supabase.co/storage/v1/object/public/products/<arquivo>`
   - Para fazer upload com permissão: usar `service_role` key (não a `anon` key)
@@ -118,10 +119,20 @@ USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 | Função | Descrição |
 |---|---|
-| `create-ecommerce-checkout` | Cria sessão Stripe para checkout |
-| `verify-payment` | Verifica status do pagamento Stripe |
-| `create-registration` | Registra participante no evento |
+| `create-ecommerce-checkout` | Cria pagamento Asaas (PIX/boleto/cartão) e retorna `invoiceUrl` |
+| `verify-payment` | Verifica status via `payment_id` Asaas — atualiza DB se pago |
+| `asaas-webhook` | Recebe eventos Asaas (`PAYMENT_RECEIVED/CONFIRMED/REFUNDED`) — `verify_jwt = false` |
+| `create-registration` | Registra participantes no evento e cria pagamento Asaas |
 | `transfer-registration` | Transfere ingresso entre usuários |
+
+**Secrets das Edge Functions** (configurar em Supabase → Edge Functions → Secrets):
+- `ASAAS_API_KEY` — chave de produção do Asaas
+- `ASAAS_WEBHOOK_TOKEN` — token de validação do webhook Asaas
+- `ASAAS_API_URL` — `https://www.asaas.com/api/v3`
+
+**externalReference** usada para roteamento no webhook:
+- `ecommerce:<order_id>` → tabela `orders`
+- `registration:<order_id>` → tabela `registrations`
 
 ---
 

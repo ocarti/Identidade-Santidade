@@ -10,7 +10,7 @@ const faqItems = [
   {
     question: "Quando e onde acontecerá o congresso Identidade e Santidade?",
     answer:
-      "O Congresso Identidade & Santidade acontecerá nos dias 24 a 26 de Julho de 2026, na Igreja Batista Betel em Dois Vizinhos, PR.",
+      "O Congresso Identidade & Santidade acontecerá nos dias 31 de Julho, 01 e 02 de Agosto de 2026, na Igreja Batista Betel em Dois Vizinhos, PR.",
   },
   {
     question: "Para quem é o Congresso Identidade & Santidade?",

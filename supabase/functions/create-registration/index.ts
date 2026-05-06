@@ -1,5 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import Stripe from "https://esm.sh/stripe@18.5.0";
+import {
+  findCustomerByCpf,
+  createCustomer,
+  createPayment,
+} from "../_shared/asaas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,6 +13,9 @@ const corsHeaders = {
 const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 const cepRegex = /^\d{5}-?\d{3}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Valor por participante em BRL — confirmar no painel antes de usar em produção
+const REGISTRATION_PRICE_BRL = 150.00;
 
 function sanitize(val: string): string {
   return val.replace(/<[^>]*>/g, "").trim();
@@ -30,7 +37,12 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-const REGISTRATION_PRICE_ID = "price_1TFLoZFjw7mg2yXH1ecqBH3W";
+function err(message: string, status = 400) {
+  return new Response(JSON.stringify({ error: message }), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -39,52 +51,34 @@ Deno.serve(async (req) => {
 
   const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
   if (!checkRateLimit(clientIp)) {
-    return new Response(JSON.stringify({ error: "Muitas requisições. Aguarde um momento e tente novamente." }), {
-      status: 429,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return err("Muitas requisições. Aguarde um momento e tente novamente.", 429);
   }
 
   try {
     const body = await req.json();
     const { participants, buyer_email } = body;
 
-    // Validate buyer_email
     if (!buyer_email || !emailRegex.test(buyer_email) || buyer_email.length > 255) {
-      return new Response(JSON.stringify({ error: "E-mail do comprador inválido" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return err("E-mail do comprador inválido");
     }
 
-    // Validate participants array
     if (!Array.isArray(participants) || participants.length === 0 || participants.length > 10) {
-      return new Response(JSON.stringify({ error: "Envie de 1 a 10 participantes" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return err("Envie de 1 a 10 participantes");
     }
 
-    // Validate each participant
     for (let i = 0; i < participants.length; i++) {
       const p = participants[i];
       if (!p.nome || typeof p.nome !== "string" || p.nome.trim().length < 3 || p.nome.trim().length > 100) {
-        return new Response(JSON.stringify({ error: `Participante ${i + 1}: Nome inválido (3-100 caracteres)` }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return err(`Participante ${i + 1}: Nome inválido (3-100 caracteres)`);
       }
       if (!p.cpf || !cpfRegex.test(p.cpf)) {
-        return new Response(JSON.stringify({ error: `Participante ${i + 1}: CPF inválido` }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return err(`Participante ${i + 1}: CPF inválido`);
       }
       if (!p.email || !emailRegex.test(p.email) || p.email.length > 255) {
-        return new Response(JSON.stringify({ error: `Participante ${i + 1}: E-mail inválido` }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return err(`Participante ${i + 1}: E-mail inválido`);
       }
       if (!p.nascimento) {
-        return new Response(JSON.stringify({ error: `Participante ${i + 1}: Data de nascimento obrigatória` }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return err(`Participante ${i + 1}: Data de nascimento obrigatória`);
       }
       const birth = new Date(p.nascimento);
       const now = new Date();
@@ -92,14 +86,10 @@ Deno.serve(async (req) => {
       const m = now.getMonth() - birth.getMonth();
       if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
       if (age < 8) {
-        return new Response(JSON.stringify({ error: `Participante ${i + 1}: Inscrições online são apenas para maiores de 8 anos` }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return err(`Participante ${i + 1}: Inscrições online são apenas para maiores de 8 anos`);
       }
       if (!p.cep || !cepRegex.test(p.cep)) {
-        return new Response(JSON.stringify({ error: `Participante ${i + 1}: CEP inválido` }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return err(`Participante ${i + 1}: CEP inválido`);
       }
     }
 
@@ -108,7 +98,6 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Check duplicate CPFs
     const cpfs = participants.map((p: any) => p.cpf);
     const { data: existing } = await supabase
       .from("registrations")
@@ -117,15 +106,11 @@ Deno.serve(async (req) => {
 
     if (existing && existing.length > 0) {
       const duplicates = existing.map((e: any) => e.cpf).join(", ");
-      return new Response(JSON.stringify({ error: `CPF(s) já cadastrado(s): ${duplicates}` }), {
-        status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return err(`CPF(s) já cadastrado(s): ${duplicates}`, 409);
     }
 
-    // Generate a shared order_id
     const order_id = crypto.randomUUID();
 
-    // Insert all participants with status pendente
     const rows = participants.map((p: any) => ({
       nome: sanitize(p.nome),
       cpf: p.cpf,
@@ -139,50 +124,62 @@ Deno.serve(async (req) => {
       status_pagamento: "pendente",
     }));
 
-    const { data, error } = await supabase
+    const { data, error: insertError } = await supabase
       .from("registrations")
       .insert(rows)
       .select("id, nome, email, qr_code_token, transfer_token");
 
-    if (error) {
-      console.error("Insert error:", error);
-      return new Response(JSON.stringify({ error: "Erro ao registrar inscrições" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (insertError) {
+      console.error("Insert error:", insertError);
+      return err("Erro ao registrar inscrições", 500);
     }
 
-    // Create Stripe Checkout session
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    // Use first participant for Asaas customer
+    const first = participants[0];
+    const cpfClean = first.cpf.replace(/\D/g, "");
 
+    let customerId: string;
+    const search = await findCustomerByCpf(cpfClean);
+    if (search.data && search.data.length > 0) {
+      customerId = search.data[0].id;
+    } else {
+      const created = await createCustomer({
+        name: sanitize(first.nome),
+        email: sanitize(first.email),
+        cpfCnpj: cpfClean,
+      });
+      customerId = created.id;
+    }
+
+    const total = REGISTRATION_PRICE_BRL * participants.length;
+    const dueDate = new Date(Date.now() + 3 * 86_400_000).toISOString().slice(0, 10);
     const origin = req.headers.get("origin") || "https://pure-identity-flow.lovable.app";
 
-    const session = await stripe.checkout.sessions.create({
-      customer_email: buyer_email,
-      line_items: [
-        {
-          price: REGISTRATION_PRICE_ID,
-          quantity: participants.length,
-        },
-      ],
-      mode: "payment",
-      success_url: `${origin}/inscricao/sucesso?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/inscricao?canceled=true`,
-      metadata: {
-        order_id,
-        type: "registration",
+    const payment = await createPayment({
+      customer: customerId,
+      billingType: "UNDEFINED",
+      value: total,
+      dueDate,
+      description: `Identidade Santidade 2026 — ${participants.length} inscri${participants.length === 1 ? "ção" : "ções"}`,
+      externalReference: `registration:${order_id}`,
+      callback: {
+        successUrl: `${origin}/inscricao/sucesso?order_id=${order_id}`,
+        autoRedirect: true,
       },
     });
 
-    return new Response(JSON.stringify({ url: session.url, order_id }), {
+    // Save asaas IDs to all registrations for this order
+    await supabase
+      .from("registrations")
+      .update({ asaas_payment_id: payment.id, asaas_invoice_url: payment.invoiceUrl })
+      .eq("order_id", order_id);
+
+    return new Response(JSON.stringify({ url: payment.invoiceUrl, order_id }), {
       status: 201,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (err) {
-    console.error("Request error:", err);
-    return new Response(JSON.stringify({ error: "Requisição inválida" }), {
-      status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+  } catch (e) {
+    console.error("create-registration error:", e);
+    return err("Requisição inválida", 400);
   }
 });

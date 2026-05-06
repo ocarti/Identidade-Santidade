@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { EcommerceLayout } from "@/components/ecommerce/EcommerceLayout";
 import { motion } from "framer-motion";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 type Order = {
   id: string;
   total: number;
   status: string;
+  asaas_payment_id: string | null;
   created_at: string;
   order_items: {
     quantidade: number;
@@ -20,29 +21,45 @@ type Order = {
 export default function Obrigado() {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id");
-  const sessionId = searchParams.get("session_id");
   const [order, setOrder] = useState<Order | null>(null);
-
-  const fetchOrder = async (id: string) => {
-    const { data } = await supabase
-      .from("orders")
-      .select("id, total, status, created_at, order_items(quantidade, preco_unitario, products(nome))")
-      .eq("id", id)
-      .maybeSingle();
-    setOrder(data as Order);
-  };
+  const [paid, setPaid] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!orderId) return;
 
-    if (sessionId) {
-      supabase.functions.invoke("verify-payment", {
-        body: { session_id: sessionId },
-      }).finally(() => fetchOrder(orderId));
-    } else {
-      fetchOrder(orderId);
-    }
-  }, [orderId, sessionId]);
+    const run = async () => {
+      const { data } = await supabase
+        .from("orders")
+        .select("id, total, status, asaas_payment_id, created_at, order_items(quantidade, preco_unitario, products(nome))")
+        .eq("id", orderId)
+        .maybeSingle();
+
+      const o = data as Order | null;
+      setOrder(o);
+
+      if (o?.asaas_payment_id) {
+        const { data: verifyData } = await supabase.functions.invoke("verify-payment", {
+          body: { payment_id: o.asaas_payment_id },
+        });
+        setPaid(verifyData?.paid ?? false);
+
+        if (verifyData?.paid) {
+          const { data: updated } = await supabase
+            .from("orders")
+            .select("id, total, status, asaas_payment_id, created_at, order_items(quantidade, preco_unitario, products(nome))")
+            .eq("id", orderId)
+            .maybeSingle();
+          setOrder(updated as Order | null);
+        }
+      } else {
+        setPaid(o?.status === "pago");
+      }
+    };
+
+    run();
+  }, [orderId]);
+
+  const isPaid = paid === true || order?.status === "pago";
 
   return (
     <EcommerceLayout>
@@ -53,14 +70,31 @@ export default function Obrigado() {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
-          <h1 className="font-display text-4xl md:text-5xl mb-4">Obrigado!</h1>
-          <p className="font-body text-muted-foreground mb-2">
-            Obrigado por acreditar no projeto. Deus é maravilhoso.
-          </p>
-          <p className="font-body text-muted-foreground mb-2">
-            Esperamos você no congresso. Mais informações enviaremos por e-mail.
-          </p>
+          {isPaid ? (
+            <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
+          ) : (
+            <Clock className="mx-auto h-16 w-16 text-yellow-500 mb-4" />
+          )}
+
+          <h1 className="font-display text-4xl md:text-5xl mb-4">
+            {isPaid ? "Obrigado!" : "Pedido Recebido!"}
+          </h1>
+
+          {isPaid ? (
+            <>
+              <p className="font-body text-muted-foreground mb-3">
+                Sua compra está concluída.
+              </p>
+              <p className="font-body text-muted-foreground mb-3">
+                Esperamos você no congresso.
+              </p>
+            </>
+          ) : (
+            <p className="font-body text-muted-foreground mb-3">
+              Aguardando confirmação do pagamento. Você receberá um e-mail assim que for confirmado.
+            </p>
+          )}
+
           <p className="font-body text-muted-foreground mb-6">
             Qualquer dúvida chame pelo WhatsApp{" "}
             <a
@@ -73,6 +107,12 @@ export default function Obrigado() {
             </a>{" "}
             com Eduardo.
           </p>
+
+          <div className="border-y border-foreground/15 py-5 mb-6">
+            <p className="font-display text-2xl md:text-3xl tracking-wide">
+              Deus é maravilhoso.
+            </p>
+          </div>
 
           {order && (
             <div className="border border-foreground/10 p-4 mb-6 text-left">

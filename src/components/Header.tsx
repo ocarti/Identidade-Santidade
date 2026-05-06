@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
+import { Menu, X, ShoppingCart, User, LogOut, BarChart3 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logoBlack from "@/assets/logo-black.png";
 import { useCart } from "@/contexts/CartContext";
@@ -37,6 +37,15 @@ export function Header() {
           >
             Loja
           </Link>
+          {user?.email === "ocarti@gmail.com" && (
+            <Link
+              to="/dashboard"
+              className="font-body text-sm font-medium uppercase tracking-widest hover:opacity-60 transition-opacity flex items-center gap-1"
+            >
+              <BarChart3 size={15} />
+              Dashboard
+            </Link>
+          )}
           <Link
             to={user ? "/ecommerce/conta" : "/ecommerce/login"}
             className="font-body text-sm font-medium uppercase tracking-widest hover:opacity-60 transition-opacity flex items-center gap-1"
@@ -90,6 +99,16 @@ export function Header() {
               >
                 Loja
               </Link>
+              {user?.email === "ocarti@gmail.com" && (
+                <Link
+                  to="/dashboard"
+                  className="font-body text-lg uppercase tracking-widest flex items-center gap-2"
+                  onClick={() => setOpen(false)}
+                >
+                  <BarChart3 size={18} />
+                  Dashboard
+                </Link>
+              )}
               <Link
                 to={user ? "/ecommerce/conta" : "/ecommerce/login"}
                 className="font-body text-lg uppercase tracking-widest"

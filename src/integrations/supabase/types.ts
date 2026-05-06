@@ -49,6 +49,7 @@ export type Database = {
           email: string
           cpf: string | null
           telefone: string | null
+          asaas_customer_id: string | null
           created_at: string
           updated_at: string
         }
@@ -59,6 +60,7 @@ export type Database = {
           email: string
           cpf?: string | null
           telefone?: string | null
+          asaas_customer_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -69,6 +71,7 @@ export type Database = {
           email?: string
           cpf?: string | null
           telefone?: string | null
+          asaas_customer_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -102,6 +105,7 @@ export type Database = {
           product_id: string
           quantidade: number
           preco_unitario: number
+          tamanho: string | null
           created_at: string
         }
         Insert: {
@@ -110,6 +114,7 @@ export type Database = {
           product_id: string
           quantidade?: number
           preco_unitario: number
+          tamanho?: string | null
           created_at?: string
         }
         Update: {
@@ -118,6 +123,7 @@ export type Database = {
           product_id?: string
           quantidade?: number
           preco_unitario?: number
+          tamanho?: string | null
           created_at?: string
         }
         Relationships: [
@@ -143,8 +149,8 @@ export type Database = {
           user_id: string
           status: Database["public"]["Enums"]["order_status"]
           total: number
-          stripe_session_id: string | null
-          stripe_payment_intent: string | null
+          asaas_payment_id: string | null
+          asaas_invoice_url: string | null
           created_at: string
           updated_at: string
         }
@@ -153,8 +159,8 @@ export type Database = {
           user_id: string
           status?: Database["public"]["Enums"]["order_status"]
           total: number
-          stripe_session_id?: string | null
-          stripe_payment_intent?: string | null
+          asaas_payment_id?: string | null
+          asaas_invoice_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -163,8 +169,8 @@ export type Database = {
           user_id?: string
           status?: Database["public"]["Enums"]["order_status"]
           total?: number
-          stripe_session_id?: string | null
-          stripe_payment_intent?: string | null
+          asaas_payment_id?: string | null
+          asaas_invoice_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -181,6 +187,7 @@ export type Database = {
           imagem_url: string | null
           nome: string
           preco: number
+          tamanhos: string[] | null
         }
         Insert: {
           arquivo_url?: string | null
@@ -192,6 +199,7 @@ export type Database = {
           imagem_url?: string | null
           nome: string
           preco: number
+          tamanhos?: string[] | null
         }
         Update: {
           arquivo_url?: string | null
@@ -203,6 +211,7 @@ export type Database = {
           imagem_url?: string | null
           nome?: string
           preco?: number
+          tamanhos?: string[] | null
         }
         Relationships: []
       }
@@ -220,7 +229,8 @@ export type Database = {
           order_id: string | null
           qr_code_token: string | null
           status_pagamento: Database["public"]["Enums"]["payment_status"]
-          stripe_transaction_id: string | null
+          asaas_payment_id: string | null
+          asaas_invoice_url: string | null
           transfer_token: string | null
         }
         Insert: {
@@ -236,7 +246,8 @@ export type Database = {
           order_id?: string | null
           qr_code_token?: string | null
           status_pagamento?: Database["public"]["Enums"]["payment_status"]
-          stripe_transaction_id?: string | null
+          asaas_payment_id?: string | null
+          asaas_invoice_url?: string | null
           transfer_token?: string | null
         }
         Update: {
@@ -252,7 +263,8 @@ export type Database = {
           order_id?: string | null
           qr_code_token?: string | null
           status_pagamento?: Database["public"]["Enums"]["payment_status"]
-          stripe_transaction_id?: string | null
+          asaas_payment_id?: string | null
+          asaas_invoice_url?: string | null
           transfer_token?: string | null
         }
         Relationships: []

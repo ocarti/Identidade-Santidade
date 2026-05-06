@@ -18,6 +18,15 @@ export function ProfileForm({ profile, formData, onChange, errors, onSave, savin
   const set = (field: keyof ProfileData) => (e: React.ChangeEvent<HTMLInputElement>) =>
     onChange({ ...formData, [field]: e.target.value });
 
+  const handleCpf = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const digits = e.target.value.replace(/\D/g, "").slice(0, 11);
+    const masked = digits
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+      .replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
+    onChange({ ...formData, cpf: masked });
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -45,9 +54,11 @@ export function ProfileForm({ profile, formData, onChange, errors, onSave, savin
           <Label className="font-body text-xs uppercase tracking-widest mb-2 block">CPF</Label>
           <Input
             value={formData.cpf}
-            onChange={set("cpf")}
+            onChange={handleCpf}
             className="border-foreground/20 bg-transparent font-body focus:border-foreground"
             placeholder="000.000.000-00"
+            inputMode="numeric"
+            maxLength={14}
           />
           {errors.cpf && <p className="text-destructive text-xs mt-1 font-body">{errors.cpf}</p>}
         </div>

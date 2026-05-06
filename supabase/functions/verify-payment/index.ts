@@ -1,10 +1,17 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import Stripe from "https://esm.sh/stripe@18.5.0";
+import { getPayment } from "../_shared/asaas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+function ok(body: unknown) {
+  return new Response(JSON.stringify(body), {
+    status: 200,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -12,24 +19,20 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { session_id } = await req.json();
+    const { payment_id } = await req.json();
 
-    if (!session_id || typeof session_id !== "string") {
-      return new Response(JSON.stringify({ error: "session_id obrigatório" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    if (!payment_id || typeof payment_id !== "string") {
+      return new Response(JSON.stringify({ error: "payment_id obrigatório" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2024-06-20",
-    });
+    const payment = await getPayment(payment_id);
+    const isPaid = payment.status === "RECEIVED" || payment.status === "CONFIRMED";
 
-    const session = await stripe.checkout.sessions.retrieve(session_id);
-
-    if (session.payment_status !== "paid") {
-      return new Response(JSON.stringify({ error: "Pagamento não confirmado", status: session.payment_status }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (!isPaid) {
+      return ok({ paid: false, status: payment.status });
     }
 
     const supabase = createClient(
@@ -37,64 +40,25 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const type = session.metadata?.type;
-    const stripePaymentId = session.payment_intent as string;
+    const ref = payment.externalReference ?? "";
 
-    if (type === "registration") {
-      const order_id = session.metadata?.order_id;
-      if (!order_id) {
-        return new Response(JSON.stringify({ error: "order_id não encontrado" }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      // Update registrations to paid
+    if (ref.startsWith("ecommerce:")) {
+      const orderId = ref.slice("ecommerce:".length);
+      await supabase.from("orders").update({ status: "pago" }).eq("id", orderId);
+    } else if (ref.startsWith("registration:")) {
+      const orderId = ref.slice("registration:".length);
       await supabase
         .from("registrations")
-        .update({ status_pagamento: "pago", stripe_transaction_id: stripePaymentId })
-        .eq("order_id", order_id);
-
-      // Fetch registration data to return
-      const { data: registrations } = await supabase
-        .from("registrations")
-        .select("id, nome, email, qr_code_token, transfer_token, buyer_email")
-        .eq("order_id", order_id);
-
-      return new Response(JSON.stringify({
-        type: "registration",
-        order_id,
-        registrations,
-        buyer_email: registrations?.[0]?.buyer_email,
-      }), {
-        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        .update({ status_pagamento: "pago" })
+        .eq("order_id", orderId);
     }
 
-    if (type === "ecommerce") {
-      const order_id = session.metadata?.order_id;
-      if (!order_id) {
-        return new Response(JSON.stringify({ error: "order_id não encontrado" }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      await supabase
-        .from("orders")
-        .update({ status: "pago", stripe_payment_intent: stripePaymentId })
-        .eq("id", order_id);
-
-      return new Response(JSON.stringify({ type: "ecommerce", order_id }), {
-        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    return new Response(JSON.stringify({ error: "Tipo de pagamento desconhecido" }), {
-      status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  } catch (err) {
-    console.error("Verify payment error:", err);
+    return ok({ paid: true, status: payment.status });
+  } catch (e) {
+    console.error("verify-payment error:", e);
     return new Response(JSON.stringify({ error: "Erro ao verificar pagamento" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
